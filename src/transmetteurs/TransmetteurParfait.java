@@ -12,11 +12,15 @@ import java.util.*;
  * l'entrée du transmetteur implémente l'interface
  * DestinationInterface, la sortie du transmetteur implémente
  * l'interface SourceInterface
- * @author prou
  */
 
 public abstract class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
 	
+	/**
+	 * Recoit une information 
+	 * @param information : information reçue
+	 * @throws InformationNonConformeException si l'Information comporte une anomalie
+	 */
 	@Override
 	public void recevoir(Information<Boolean> information) throws InformationNonConformeException{
 		
@@ -29,7 +33,10 @@ public abstract class TransmetteurParfait extends Transmetteur <Boolean, Boolean
 		
 	}
 	
-
+	/**
+     * émet l'information construite par le transmetteur
+     * @throws InformationNonConformeException si l'Information comporte une anomalie
+     */
 	@Override
 	public void emettre() throws InformationNonConformeException{
 		
