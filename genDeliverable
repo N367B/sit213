@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Noms des auteurs
+NOM1="BODIN"
+NOM2="LE_COQ"
+NOM3="COLIN"
+NOM4="DOUANT"
+
+# Nom de l'archive
+ARCHIVE="${NOM1}-${NOM2}-${NOM3}-${NOM4}.tar.gz"
+
+./cleanAll
+
+# Création de l'archive
+tar -czvf "$ARCHIVE" * 
+
+echo "Livrable créé : $ARCHIVE"

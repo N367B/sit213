@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Generate documentation
+
+javadoc ./src/*.java -d ./docs

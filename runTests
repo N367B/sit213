@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+tests=(
+  ""               # No arguments
+  "Alice"          # Single argument
+  "Bob Charlie"    # Multiple arguments
+  "Hello World!"   # Argument with special characters
+)
+
+for test in "${tests[@]}"; do
+  echo "Running test with arguments: '$test'"
+  java -cp bin HelloWorld $test
+  echo ""
+done
