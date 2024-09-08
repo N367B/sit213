@@ -1,8 +1,10 @@
 package simulateur;
-import destinations.Destination;
 import sources.Source;
-import transmetteurs.Transmetteur;
-
+import sources.SourceAleatoire;
+import sources.SourceFixe;
+import visualisations.SondeLogique;
+import transmetteurs.*;
+import destinations.*;
 
 /** La classe Simulateur permet de construire et simuler une chaîne de
  * transmission composée d'une Source, d'un nombre variable de
@@ -56,9 +58,24 @@ public class Simulateur {
     public  Simulateur(String [] args) throws ArgumentsException {
     	// analyser et récupérer les arguments   	
     	analyseArguments(args);
-      
-      	// TODO : Partie à compléter
-      		
+        if (messageAleatoire) {
+            if (aleatoireAvecGerme) {
+                source = new SourceAleatoire(nbBitsMess, seed);
+            }
+            else {
+                source = new SourceAleatoire(nbBitsMess);
+            }
+        }
+        else {
+            source = new SourceFixe(messageString);
+        }
+        source.connecter(new SondeLogique("Source", 200));
+        transmetteurLogique = new TransmetteurParfait();
+        source.connecter(transmetteurLogique);
+        transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+        destination = new DestinationFinale();
+        transmetteurLogique.connecter(destination);
+        //destination.connecter(new SondeLogique("Destination", 200));
     }
    
    
@@ -137,7 +154,8 @@ public class Simulateur {
     public void execute() throws Exception {      
          
     	// TODO : typiquement source.emettre(); 
-      	     	      
+        source.emettre();
+        destination.recevoir(source.getInformationEmise());
     }
    
    	   	
@@ -150,6 +168,7 @@ public class Simulateur {
     public float  calculTauxErreurBinaire() {
 
     	// TODO : A compléter
+
 
     	return  0.0f;
     }
