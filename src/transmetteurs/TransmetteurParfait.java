@@ -14,7 +14,7 @@ import java.util.*;
  * l'interface SourceInterface
  */
 
-public abstract class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
+public class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
 	
 	/**
 	 * Recoit une information 
@@ -42,7 +42,7 @@ public abstract class TransmetteurParfait extends Transmetteur <Boolean, Boolean
 		
 		for (DestinationInterface <Boolean> destinationConnectee : destinationsConnectees) {
             destinationConnectee.recevoir(informationEmise);
-         }
+        }
 		
 	}
 	    
