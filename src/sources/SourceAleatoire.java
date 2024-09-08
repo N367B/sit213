@@ -20,12 +20,14 @@ public class SourceAleatoire extends Source<Boolean> {
      */
     public SourceAleatoire(int tailleListe) {
         super();
-        informationEmise = new Information<Boolean>();  // Utilisation de la classe Information
+        informationGeneree = new Information<Boolean>();
+        // informationEmise = new Information<Boolean>();  // Utilisation de la classe Information
         Random random = new Random();
 
         // Générer la liste de booléens aléatoires
         for (int i = 0; i < tailleListe; i++) {
-            informationEmise.add(random.nextBoolean());
+            informationGeneree.add(random.nextBoolean());
+            // informationEmise.add(random.nextBoolean());
         }
     }
 
@@ -38,7 +40,8 @@ public class SourceAleatoire extends Source<Boolean> {
      */
     public SourceAleatoire(int tailleListe, Integer seed) {
         super();
-        informationEmise = new Information<Boolean>();  // Utilisation de la classe Information
+        informationGeneree = new Information<Boolean>();
+        // informationEmise = new Information<Boolean>();  // Utilisation de la classe Information
         Random random;
 
         // Initialiser l'objet Random avec la graine si elle est fournie, sinon utiliser une nouvelle instance
@@ -50,7 +53,16 @@ public class SourceAleatoire extends Source<Boolean> {
 
         // Générer la liste de booléens aléatoires
         for (int i = 0; i < tailleListe; i++) {
-            informationEmise.add(random.nextBoolean());
+            informationGeneree.add(random.nextBoolean());
+            //informationEmise.add(random.nextBoolean());
         }
     }
+
+    /**
+     * Fonction main pour tester la classe {@code SourceAleatoire}.
+     */
+    public static void main(String[] args) {
+        SourceAleatoire sourceAleatoire = new SourceAleatoire(10);
+        System.out.println("Liste de booléens aléatoires générée: " + sourceAleatoire.informationGeneree);
+    }    
 }
