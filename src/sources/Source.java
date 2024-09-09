@@ -20,12 +20,12 @@ public  abstract class Source <T> implements  SourceInterface <T> {
      * l'information générée par la source
      */
     protected Information <T>  informationGeneree;
-   	
+       
     /** 
      * l'information émise par la source
      */
     protected Information <T>  informationEmise;
-   	
+       
     /** 
      * un constructeur factorisant les initialisations communes aux
      * réalisations de la classe abstraite Source
@@ -41,7 +41,7 @@ public  abstract class Source <T> implements  SourceInterface <T> {
      * @return une information   
      */
     public Information <T>  getInformationEmise() {
-	    return this.informationEmise;
+        return this.informationEmise;
     }
    
     /**
@@ -49,7 +49,7 @@ public  abstract class Source <T> implements  SourceInterface <T> {
      * @param destination  la destination à connecter
      */
     public void connecter (DestinationInterface <T> destination) {
-	    destinationsConnectees.add(destination); 
+        destinationsConnectees.add(destination); 
     }
    
     /**
@@ -57,7 +57,7 @@ public  abstract class Source <T> implements  SourceInterface <T> {
      * @param destination  la destination à déconnecter
      */
     public void deconnecter (DestinationInterface <T> destination) {
-	    destinationsConnectees.remove(destination); 
+        destinationsConnectees.remove(destination); 
     }
    
     /**
@@ -65,7 +65,7 @@ public  abstract class Source <T> implements  SourceInterface <T> {
      * @throws InformationNonConformeException si l'Information comporte une anomalie
      */
     public   void emettre() throws InformationNonConformeException {
-       	// émission vers les composants connectés
+           // émission vers les composants connectés
         for (DestinationInterface <T> destinationConnectee : destinationsConnectees) {
                 destinationConnectee.recevoir(informationGeneree);
         }

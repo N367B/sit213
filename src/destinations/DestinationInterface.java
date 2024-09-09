@@ -15,7 +15,7 @@ public  interface DestinationInterface <T>  {
      * @return une information   
      */  
     public Information <T>  getInformationRecue(); 
-   	 
+        
     /**
      * pour recevoir une information de la source qui nous est
      * connectée

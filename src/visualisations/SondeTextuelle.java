@@ -1,5 +1,5 @@
 package visualisations;
-	
+    
 import information.Information;
 
 /** 
@@ -14,11 +14,11 @@ public class SondeTextuelle <T> extends Sonde <T> {
      * @param nom  le nom de la fenêtre d'affichage
      */
     public SondeTextuelle(String nom) {
-	super(nom);
+        super(nom);
     }
    
     public void recevoir (Information <T> information) { 		 		 	
-	informationRecue = information;
-	System.out.println(nom + " : " + information);
+        informationRecue = information;
+        System.out.println(nom + " : " + information);
     }
 }

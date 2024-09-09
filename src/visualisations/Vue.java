@@ -1,5 +1,5 @@
 package visualisations;
-	
+    
 /** 
  * @author B. Prou
  * Updated by E. Cousin - 2021
@@ -18,31 +18,31 @@ public class Vue extends JFrame{
     private static int yDecalage = 200;
  
     public static int getXPosition() {
-	xPosition += 0;
-	return xPosition - 0;
+        xPosition += 0;
+        return xPosition - 0;
     }  
 
     public static int getYPosition() {
-	yPosition += yDecalage;
-	return yPosition - yDecalage;
+        yPosition += yDecalage;
+        return yPosition - yDecalage;
     }  
-   	
+       
    
     public  Vue (String nom) {          
-	super(nom);
-	lesVues.add(this);
-    }
-    public static void resetPosition(){
-	yPosition = 0;
-    }
-    public static void setXPosition(int x){
-	xPosition = x;
-    }
-    public static void kill(){
-	for(Vue v:lesVues)
-	    v.dispose();
-	lesVues.clear();
-	resetPosition();
+        super(nom);
+        lesVues.add(this);
+        }
+        public static void resetPosition(){
+        yPosition = 0;
+        }
+        public static void setXPosition(int x){
+        xPosition = x;
+        }
+        public static void kill(){
+        for(Vue v:lesVues)
+            v.dispose();
+        lesVues.clear();
+        resetPosition();
     }
    
 }
