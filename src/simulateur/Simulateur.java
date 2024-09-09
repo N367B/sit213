@@ -1,10 +1,12 @@
 package simulateur;
+import destinations.*;
+import information.Information;
+import java.util.Objects;
 import sources.Source;
 import sources.SourceAleatoire;
 import sources.SourceFixe;
-import visualisations.SondeLogique;
 import transmetteurs.*;
-import destinations.*;
+import visualisations.SondeLogique;
 
 /** La classe Simulateur permet de construire et simuler une chaîne de
  * transmission composée d'une Source, d'un nombre variable de
@@ -155,7 +157,11 @@ public class Simulateur {
          
     	// TODO : typiquement source.emettre(); 
         source.emettre();
-        destination.recevoir(source.getInformationEmise());
+        transmetteurLogique.recevoir(source.getInformationEmise());
+        transmetteurLogique.emettre();
+        destination.recevoir(transmetteurLogique.getInformationEmise());
+        
+        
     }
    
    	   	
@@ -167,10 +173,23 @@ public class Simulateur {
      */   	   
     public float  calculTauxErreurBinaire() {
 
-    	// TODO : A compléter
+        Information<Boolean> informationEmise = source.getInformationEmise();
+        Information<Boolean> informationRecue = destination.getInformationRecue();  
 
+        if (informationRecue == null) {
+            System.err.println("Erreur : informationRecue est null. La transmission n'a peut-être pas encore eu lieu.");
+            return -1.0f; // Ou une autre valeur indiquant une erreur
+        }
+        int nbErreurs = 0;
+        for (int i = 0; i < informationEmise.nbElements(); i++) {
+            if (!Objects.equals(informationEmise.iemeElement(i), informationRecue.iemeElement(i))) {
+                nbErreurs++;
+            }
+        }
 
-    	return  0.0f;
+        return (float) nbErreurs / informationEmise.nbElements();
+
+    	//return  0.0f;
     }
    
    

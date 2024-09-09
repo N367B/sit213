@@ -10,7 +10,7 @@ import information.Information;
 public class SourceFixe extends Source<Boolean> {
     /**
      * Constructeur de la classe SourceFixe
-     * @param message le message à envoyer, 0 ou 1
+     * @param message le message à envoyer (String), 0 ou 1
      */
     public SourceFixe(String message) {
         super();
@@ -20,13 +20,13 @@ public class SourceFixe extends Source<Boolean> {
         char[] messageChar = message.toCharArray();
 
         for (char c : messageChar) {
-            if (c == '0') {
-                informationGeneree.add(false);
-            } else if (c == '1') {
-                informationGeneree.add(true);
-            } else {
-                System.out.println("Erreur : le message doit être composé de 0 et de 1");
-                System.exit(1);
+            switch (c) {
+                case '0' -> informationGeneree.add(false);
+                case '1' -> informationGeneree.add(true);
+                default -> {
+                    System.out.println("Erreur : le message doit être composé de 0 et de 1");
+                    System.exit(1);
+                }
             }
         }
 
