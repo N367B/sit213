@@ -59,6 +59,15 @@ public class SourceAleatoire extends Source<Boolean> {
     }
 
     /**
+     * Retourne la liste de booléens générée par la source aléatoire.
+     *
+     * @return La liste de booléens générée par la source aléatoire.
+     */
+    public Information<Boolean> getInformationGeneree() {
+        return this.informationGeneree;
+    }
+
+    /**
      * Fonction main pour tester la classe {@code SourceAleatoire}.
      */
     public static void main(String[] args) {

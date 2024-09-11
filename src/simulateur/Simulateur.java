@@ -70,13 +70,15 @@ public class Simulateur {
         else {
             source = new SourceFixe(messageString);
         }
-        source.connecter(new SondeLogique("Source", 200));
         transmetteurLogique = new TransmetteurParfait();
         source.connecter(transmetteurLogique);
-        transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
         destination = new DestinationFinale();
         transmetteurLogique.connecter(destination);
-        //destination.connecter(new SondeLogique("Destination", 200));
+        if (affichage) {
+            source.connecter(new SondeLogique("Source", 200));
+            transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+            //destination.connecter(new SondeLogique("Destination", 200));
+        }
     }
    
    
@@ -191,7 +193,30 @@ public class Simulateur {
     }
    
    
-   
+    // Getter for messageAleatoire
+    public boolean isMessageAleatoire() {
+        return messageAleatoire;
+    }
+
+    // Getter for aleatoireAvecGerme
+    public boolean isAleatoireAvecGerme() {
+        return aleatoireAvecGerme;
+    }
+
+    // Getter for seed
+    public Integer getSeed() {
+        return seed;
+    }
+
+    // Getter for source
+    public Source<Boolean> getSource() {
+        return source;
+    }
+
+    // Getter for destination
+    public Destination<Boolean> getDestination() {
+        return destination;
+    }
    
     /** La fonction main instancie un Simulateur à l'aide des
      *  arguments paramètres et affiche le résultat de l'exécution
