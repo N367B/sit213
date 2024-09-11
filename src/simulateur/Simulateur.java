@@ -1,3 +1,4 @@
+package simulateur;
 
 import destinations.*;
 import information.Information;
