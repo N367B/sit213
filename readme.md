@@ -1,10 +1,5 @@
 # Projet SIT213
 
-BODIN Noé
-COLIN Guillaume
-DOUANT Antoine
-LE COQ Justine
-
 ## Organisation du projet
 
  - `doc/` : documentation du projet
@@ -15,6 +10,8 @@ LE COQ Justine
  - genDoc : script de génération de la documentation
  - compile : script de compilation
  - runTests : script de lancement des tests
+ - hello : exécutable de HelloWorld
 
-# Étape 1
+Tests environnement adapté : https://intranet.imt-atlantique.fr/catalogue-disi/ssh-2/
 
+`ssh <username>@ssh.telecom-bretagne.eu`
