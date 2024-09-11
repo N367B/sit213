@@ -1,4 +1,4 @@
-package simulateur;
+
 import destinations.*;
 import information.Information;
 import java.util.Objects;
