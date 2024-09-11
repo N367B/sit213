@@ -1,4 +1,4 @@
 #!/bin/bash
 
-
+# Include the bin directory and all libraries in the classpath, and run AllTests
 java -cp "lib/*:bin" org.junit.runner.JUnitCore tests.AllTests

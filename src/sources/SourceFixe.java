@@ -24,19 +24,25 @@ public class SourceFixe extends Source<Boolean> {
                 case '0' -> informationGeneree.add(false);
                 case '1' -> informationGeneree.add(true);
                 default -> {
-                    System.out.println("Erreur : le message doit être composé de 0 et de 1");
-                    System.exit(1);
+                    throw new IllegalArgumentException("Erreur : le message doit être composé de 0 et de 1");
                 }
             }
         }
 
     }
-
-        /**
-         * Main, vérification de la classe SourceFixe
-         */
-        public static void main(String[] args) {
-            SourceFixe source = new SourceFixe("11001");
-            System.out.println(source.informationGeneree);
-        }
+    /**
+     * Retourne la liste de booléens générée par la source aléatoire.
+     *
+     * @return La liste de booléens générée par la source aléatoire.
+     */
+    public Information<Boolean> getInformationGeneree() {
+        return this.informationGeneree;
+    }
+    /**
+     * Main, vérification de la classe SourceFixe
+     */
+    public static void main(String[] args) {
+        SourceFixe source = new SourceFixe("11001");
+        System.out.println(source.informationGeneree);
+    }
 }

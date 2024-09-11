@@ -2,14 +2,21 @@ package tests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import tests.sources.*;
+import sources.SourceAleatoireTest;
+import sources.SourceFixeTest;
+import transmetteurs.TransmetteurParfaitTest;
+import destinations.DestinationFinaleTest;
+import information.InformationTest;
+import simulateur.SimulateurTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ 
+@Suite.SuiteClasses({
+    SourceAleatoireTest.class,
     SourceFixeTest.class,
-    SourceAleatoireTest.class 
+    TransmetteurParfaitTest.class,
+    DestinationFinaleTest.class,
+    InformationTest.class,
+    SimulateurTest.class
 })
 public class AllTests {
 }

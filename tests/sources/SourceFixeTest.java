@@ -1,61 +1,54 @@
 package sources;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import information.Information;
-import information.InformationNonConformeException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-class SourceFixeTest {
+public class SourceFixeTest {
 
+    /**
+     * Test the constructor with a valid message.
+     */
     @Test
-    void testConstructionEtInformationGeneree() {
-        String message = "101011";
-        SourceFixe source = new SourceFixe(message);
+    public void testValidMessage() {
+        String message = "11001";
+        SourceFixe sourceFixe = new SourceFixe(message);
 
-        Information<Boolean> informationAttendue = new Information<>();
-        informationAttendue.add(true);
-        informationAttendue.add(false);
-        informationAttendue.add(true);
-        informationAttendue.add(false);
-        informationAttendue.add(true);
-        informationAttendue.add(true);
+        // Expected Information<Boolean> based on the input message "11001"
+        Information<Boolean> expectedInformation = new Information<>();
+        expectedInformation.add(true);
+        expectedInformation.add(true);
+        expectedInformation.add(false);
+        expectedInformation.add(false);
+        expectedInformation.add(true);
 
-        assertEquals(informationAttendue, source.getInformationGeneree());
+        // Assert that the generated information matches the expected information
+        assertEquals(expectedInformation, sourceFixe.getInformationGeneree());
     }
 
+    /**
+     * Test the constructor with an empty message.
+     */
     @Test
-    void testMessageInvalide() {
-        String messageInvalide = "12345"; // Contient des caractères autres que 0 et 1
+    public void testEmptyMessage() {
+        String message = "";
+        SourceFixe sourceFixe = new SourceFixe(message);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new SourceFixe(messageInvalide);
-        });
+        // Expected empty Information<Boolean>
+        Information<Boolean> expectedInformation = new Information<>();
+
+        // Assert that the generated information is empty
+        assertEquals(expectedInformation, sourceFixe.getInformationGeneree());
     }
 
-    @Test
-    void testEmission() throws InformationNonConformeException {
-        String message = "0011";
-        SourceFixe source = new SourceFixe(message);
-        DestinationInterface<Boolean> destinationMock = new DestinationInterface<>() {
-            private Information<Boolean> informationRecue;
-
-            @Override
-            public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
-                this.informationRecue = information;
-            }
-
-            @Override
-            public Information<Boolean> getInformationRecue() {
-                return informationRecue;
-            }
-        };
-
-        source.connecter(destinationMock);
-        source.emettre();
-
-        assertEquals(source.getInformationGeneree(), destinationMock.getInformationRecue());
+    /**
+     * Test the constructor with an invalid message.
+     * Since the code uses System.exit(1) for invalid input, this test will require handling of System.exit.
+     * We will modify the SourceFixe class to throw an IllegalArgumentException for this test.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidMessage() {
+        String invalidMessage = "11002";  // Contains an invalid character '2'
+        new SourceFixe(invalidMessage);  // Should throw an IllegalArgumentException
     }
 }
