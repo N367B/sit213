@@ -1,13 +1,11 @@
 package simulateur;
 
 import destinations.*;
-import information.Information;
+import information.*;
 import java.util.Objects;
-import sources.Source;
-import sources.SourceAleatoire;
-import sources.SourceFixe;
+import sources.*;
 import transmetteurs.*;
-import visualisations.SondeLogique;
+import visualisations.*;
 
 /** La classe Simulateur permet de construire et simuler une chaîne de
  * transmission composée d'une Source, d'un nombre variable de
