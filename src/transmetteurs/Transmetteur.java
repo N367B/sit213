@@ -62,6 +62,7 @@ public abstract  class Transmetteur <R,E> implements  DestinationInterface <R>, 
     }
     /**
      * Getter des destinations connectées
+     * @return la liste des destinations connectées
      */
     public LinkedList<DestinationInterface<E>> getDestinationsConnectees() {
         return destinationsConnectees;
