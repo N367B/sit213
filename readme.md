@@ -1,17 +1,25 @@
 # Projet SIT213
 
+BODIN Noé
+
+COLIN Guillaume
+
+DOUANT Antoine
+
+LE COQ Justine
+
 ## Organisation du projet
 
  - `doc/` : documentation du projet
  - `src/` : code source du projet
  - `bin/` : exécutables du projet
+ - `lib/` : bibliothèques du projet
  - cleanAll : script de nettoyage
  - genDeliverable : script de génsudération de l'archive
  - genDoc : script de génération de la documentation
  - compile : script de compilation
  - runTests : script de lancement des tests
- - hello : exécutable de HelloWorld
+ - readme.md : ce fichier
 
-Tests environnement adapté : https://intranet.imt-atlantique.fr/catalogue-disi/ssh-2/
 
-`ssh <username>@ssh.telecom-bretagne.eu`
+Pour lancer le simulateur, il suffit de lancer la commande `` dans le répertoire racine du projet.
