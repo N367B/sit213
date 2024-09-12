@@ -3,6 +3,7 @@ package simulateur;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import sources.SourceAleatoire;
+import sources.SourceFixe;
 import destinations.DestinationFinale;
 
 public class SimulateurTest {
@@ -49,12 +50,15 @@ public class SimulateurTest {
 
     @Test
     public void testCalculTauxErreurBinaire_WithErrors() throws Exception {
-        String[] args = {"-mess", "3", "-seed", "1"};
+        String[] args = {"-mess", "0011001100110011"};
         Simulateur simulateur = new Simulateur(args);
 
-        simulateur.execute();  // Randomly generated messages should have errors
-
+        simulateur.execute();
+        // Generate errors in the transmission
+        simulateur.getDestination().setInformationRecue(new SourceFixe("0011001100111100").getInformationGeneree());        
         // The TEB should be greater than 0 if errors are introduced
         assertTrue(simulateur.calculTauxErreurBinaire() > 0);
+        // The TEB should be 0.25 if 25% of the bits are incorrect
+        assertEquals(0.25f, simulateur.calculTauxErreurBinaire(), 0.001);
     }
 }

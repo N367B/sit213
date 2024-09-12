@@ -1,6 +1,7 @@
 package destinations;
 
-import information.*;
+import information.Information;
+import information.InformationNonConformeException;
 
 /** 
  * Classe Abstraite d'un composant destination d'informations dont les
@@ -8,7 +9,6 @@ import information.*;
  * @author prou
  */
 public  abstract class Destination <T> implements DestinationInterface <T> {
-    
     /** 
      * l'information reçue par la destination
      */
@@ -29,7 +29,13 @@ public  abstract class Destination <T> implements DestinationInterface <T> {
     public Information  <T>  getInformationRecue() {
         return this.informationRecue;
     }
-           
+    /**
+     * fixe l'information reçue par la destination
+        * @param information  l'information  reçue
+        */
+    public void setInformationRecue(Information <T> information) {
+        this.informationRecue = information;
+    }
     /**
      * reçoit une information
      * @param information  l'information  à recevoir
