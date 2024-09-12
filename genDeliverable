@@ -1,13 +1,14 @@
 #!/bin/bash
+ETAPE=1
 
 # Noms des auteurs
 NOM1="BODIN"
-NOM2="LE_COQ"
-NOM3="COLIN"
-NOM4="DOUANT"
+NOM2="COLIN"
+NOM3="DOUANT"
+NOM4="LE_COQ"
 
 # Nom de l'archive
-ARCHIVE="${NOM1}-${NOM2}-${NOM3}-${NOM4}.tar.gz"
+ARCHIVE="${NOM1}-${NOM2}-${NOM3}-${NOM4}-SIT213-Etape${ETAPE}.tar.gz"
 
 ./cleanAll
 
