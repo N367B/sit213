@@ -1,8 +1,11 @@
 package sources;
 
 import information.Information;
+import information.InformationNonConformeException;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
+import destinations.DestinationFinale;
 
 public class SourceFixeTest {
 
@@ -51,4 +54,31 @@ public class SourceFixeTest {
         String invalidMessage = "11002";  // Contains an invalid character '2'
         new SourceFixe(invalidMessage);  // Should throw an IllegalArgumentException
     }
+    
+    
+	/**
+	 * Test connection between SourceFixe and Destination.
+	 * @throws InformationNonConformeException 
+	 */
+        @Test
+		public void testConnection() throws InformationNonConformeException {
+			String message = "11001";
+			SourceFixe sourceFixe = new SourceFixe(message);
+			DestinationFinale destinationTest = new DestinationFinale();
+			sourceFixe.connecter(destinationTest);
+			sourceFixe.emettre();
+			assertEquals(sourceFixe.getInformationGeneree(), destinationTest.getInformationRecue());
+		}
+    /**
+     * Test disconnecting a destination from the source.
+     */
+        @Test
+		public void testDeconnection() {
+			String message = "11001";
+			SourceFixe sourceFixe = new SourceFixe(message);
+			DestinationFinale destinationTest = new DestinationFinale();
+			sourceFixe.connecter(destinationTest);
+			sourceFixe.deconnecter(destinationTest);
+			assertEquals(0, sourceFixe.destinationsConnectees.size());
+		}
 }
