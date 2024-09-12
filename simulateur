@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Check if the project is already compiled by looking for the Simulateur.class file
+if [ ! -f ./bin/simulateur/Simulateur.class ]; then
+    echo "Error: Simulateur is not compiled. Please compile the project first."
+    exit 1
+fi
+
+# Run the Simulateur class with provided arguments
+java -cp "./bin:lib/*" simulateur.Simulateur "$@"
