@@ -81,4 +81,31 @@ public class TransmetteurParfaitTest {
             return receivedInformation;
         }
     }
-}
+	/**
+	 * Test connecting a destination to the transmetteur.
+	 */
+        @Test
+            public void testConnecter() {
+        	                // Create a mock destination
+                MockDestination<Boolean> mockDestination = new MockDestination<>();
+                // Connect the mock destination
+                transmetteur.connecter(mockDestination);
+                // Check if the destination is connected
+                assertTrue(transmetteur.getDestinationsConnectees().contains(mockDestination));
+            }
+            /**
+             * Test disconnecting a destination from the transmetteur.
+             */
+            @Test
+			public void testDeconnecter() {
+				// Create a mock destination
+				MockDestination<Boolean> mockDestination = new MockDestination<>();
+				// Connect the mock destination
+				transmetteur.connecter(mockDestination);
+				// Disconnect the mock destination
+				transmetteur.deconnecter(mockDestination);
+				// Check if the destination is disconnected
+				assertFalse(transmetteur.getDestinationsConnectees().contains(mockDestination));
+			}
+        }
+

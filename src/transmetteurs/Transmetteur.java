@@ -60,7 +60,12 @@ public abstract  class Transmetteur <R,E> implements  DestinationInterface <R>, 
     public Information <E>  getInformationEmise() {
         return this.informationEmise;
     }
-
+    /**
+     * Getter des destinations connectées
+     */
+    public LinkedList<DestinationInterface<E>> getDestinationsConnectees() {
+        return destinationsConnectees;
+    }
     /**
      * connecte une destination à la sortie du transmetteur
      * @param destination  la destination à connecter

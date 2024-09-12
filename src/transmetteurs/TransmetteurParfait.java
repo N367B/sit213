@@ -11,6 +11,7 @@ import information.*;
 
 public class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
     
+	
     /**
      * Constructeur de la classe TransmetteurParfait
      */
@@ -46,5 +47,6 @@ public class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
         }
         
     }
+    
         
 }
