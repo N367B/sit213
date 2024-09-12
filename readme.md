@@ -35,6 +35,8 @@ Pour lancer les tests, il suffit de lancer la commande `./runTests` dans le rép
 
 Pour lancer la simulation, il suffit de lancer la commande `java -cp ./bin/ simulateur.Simulateur <args>` dans le répertoire racine du projet.
 
+Par exemple `java -cp ./bin/ simulateur.Simulateur -s -mess 150 -seed 1`
+
 ## Génération de la documentation
 
 Pour générer la documentation, il suffit de lancer la commande `./genDoc` dans le répertoire racine du projet.
