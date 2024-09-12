@@ -1,6 +1,6 @@
 # Projet SIT213
 
-Étape 1 - 12/09/2024
+Étape 1 - 12/09/2024 - Groupe C1
 
 BODIN Noé
 
