@@ -69,6 +69,7 @@ public class SourceAleatoire extends Source<Boolean> {
 
     /**
      * Fonction main pour tester la classe {@code SourceAleatoire}.
+     * @param args Les arguments de la ligne de commande.
      */
     public static void main(String[] args) {
         SourceAleatoire sourceAleatoire = new SourceAleatoire(10);

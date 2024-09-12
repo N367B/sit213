@@ -22,6 +22,7 @@ LE COQ Justine
 - compile : script de compilation
 - runTests : script de lancement des tests
 - readme.md : ce fichier
+- simulateur : script du simulateur
 
 ## Compilation
 
@@ -33,9 +34,9 @@ Pour lancer les tests, il suffit de lancer la commande `./runTests` dans le rép
 
 ## Lanceur de simulation
 
-Pour lancer la simulation, il suffit de lancer la commande `java -cp ./bin/ simulateur.Simulateur <args>` dans le répertoire racine du projet.
+Pour lancer la simulation, il suffit de lancer la commande `./simulateur <args>` dans le répertoire racine du projet.
 
-Par exemple `java -cp ./bin/ simulateur.Simulateur -s -mess 150 -seed 1`
+Par exemple `./simulateur -s -mess 150 -seed 1`
 
 ## Génération de la documentation
 
@@ -53,4 +54,6 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 
 - [X] Génération de sources aléatoires (avec ou sans seed)
 - [X] Génération de sources à partir d'un String
-- [ ] Test
+- [X] Transmetteur parfait
+- [X] Destination finale
+- [X] Simulateur

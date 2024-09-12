@@ -4,15 +4,19 @@ import destinations.*;
 import information.*;
 
 /** 
- * Classe Abstraite d'un composant transmetteur d'informations dont
- * les éléments sont de type R en entrée et de type E en sortie;
- * l'entrée du transmetteur implémente l'interface
- * DestinationInterface, la sortie du transmetteur implémente
- * l'interface SourceInterface
+ * Classe TransmetteurParfait héritant de la classe Transmetteur
+ * TransmetteurParfait est un composant qui ne modifie pas l'information reçue
+ * par la source qui lui est connectée
  */
 
 public class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
     
+    /**
+     * Constructeur de la classe TransmetteurParfait
+     */
+    public TransmetteurParfait() {
+        super();
+    }
     /**
      * Recoit une information 
      * @param information : information reçue

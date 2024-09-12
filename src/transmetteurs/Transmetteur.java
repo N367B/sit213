@@ -13,6 +13,8 @@ import java.util.*;
  * DestinationInterface, la sortie du transmetteur implémente
  * l'interface SourceInterface
  * @author prou
+ * @param <R> le type des éléments reçus
+ * @param <E> le type des éléments émis
  */
 public abstract  class Transmetteur <R,E> implements  DestinationInterface <R>, SourceInterface <E> {
    

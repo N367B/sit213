@@ -8,15 +8,36 @@ package visualisations;
 import java.awt.*;
 import java.awt.geom.*;
 
+/**
+ * Classe d'une vue graphique
+ */
 public class VueCourbe  extends Vue {
     
+        /**
+         * 
+         */
     private static final long serialVersionUID = 1917L;
    
+    /**
+     * les coordonnées à afficher
+     */
     private Point2D.Float [] coordonnees;
+    /**
+     * y maximale
+     */
     private float yMax = 0;
+    /**
+     * y minimale
+     */
     private float yMin = 0;
        
        
+        /**
+         * pour construire une vue
+         * @param nom  le nom de la fenêtre d'affichage
+         * @param valeurs  les valeurs à afficher
+         * @param nbPixels  le nombre de pixels par valeur
+         */
     public  VueCourbe (boolean [] valeurs, int nbPixels, String nom) {   
        
         super(nom); 
@@ -51,7 +72,11 @@ public class VueCourbe  extends Vue {
         repaint();
     }
    
-   
+    /**
+     * pour construire une vue
+     * @param valeurs  les valeurs à afficher
+     * @param nom  le nom de la fenêtre d'affichage
+     */
     public  VueCourbe (float [] valeurs, String nom) {   
        
     super(nom);      
@@ -81,7 +106,10 @@ public class VueCourbe  extends Vue {
     repaint();
     }
    
-   
+        /**
+         * pour changer les valeurs à afficher
+         * @param valeurs  les nouvelles valeurs à afficher
+         */
     public  void changer (boolean [] valeurs) {   
                  
     this.coordonnees = new Point2D.Float [(2 * valeurs.length) + 1];
@@ -104,6 +132,10 @@ public class VueCourbe  extends Vue {
     paint();
     }
    
+        /**
+         * pour changer les valeurs à afficher
+         * @param valeurs  les nouvelles valeurs à afficher
+         */
     public  void changer (float [] valeurs) {   
              
     this.coordonnees = new Point2D.Float [valeurs.length];
@@ -124,12 +156,17 @@ public class VueCourbe  extends Vue {
    
    
     /**
+     * pour afficher la vue
      */
     public void paint() {
     paint(getGraphics());
     }
    
        
+        /**
+         * pour afficher la vue
+         * @param g  le contexte graphique
+         */
     public void paint(Graphics g) {
     if (g == null) {
             return;

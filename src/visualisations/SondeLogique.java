@@ -23,6 +23,11 @@ public class SondeLogique extends Sonde <Boolean> {
         this.nbPixels = nbPixels;
     }
     
+    /**
+     * pour recevoir et afficher l'information transmise par la source
+     * qui nous est connectée
+     * @param information  l'information  à recevoir
+     */
     public void recevoir (Information <Boolean> information) { 
         informationRecue = information;
         int nbElements = information.nbElements();

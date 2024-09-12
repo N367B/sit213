@@ -6,6 +6,7 @@ import information.Information;
 /** 
  * Classe Abstraite d'un composant destination réalisant un affichage
  * @author prou
+ * @param <T> le type des éléments de l'information
  */
 public  abstract class Sonde <T> extends Destination <T> {
    
@@ -15,7 +16,7 @@ public  abstract class Sonde <T> extends Destination <T> {
     protected String nom;
    
     /**
-     *  
+     * pour construire une sonde
      * @param nom  le nom de la fenêtre d'affichage
      */   
     public Sonde(String nom) {

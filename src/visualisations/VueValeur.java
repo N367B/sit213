@@ -8,14 +8,27 @@ package visualisations;
 
 import javax.swing.*;
 
+/**
+ * Classe d'une vue graphique
+ */
 public class VueValeur  extends Vue {
 
+    /**
+     * 
+     */
     private static final long serialVersionUID = 1917L;
     
+    /**
+     * nom de la fenêtre d'affichage
+     */
     private JLabel jLabel;
         
         
-  
+        /**
+         * pour construire une vue
+         * @param nom  le nom de la fenêtre d'affichage
+         * @param valeur la valeur à afficher
+         */
     public  VueValeur (Object valeur, String nom) {   
        
         super(nom); 

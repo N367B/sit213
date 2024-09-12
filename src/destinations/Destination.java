@@ -7,6 +7,7 @@ import information.InformationNonConformeException;
  * Classe Abstraite d'un composant destination d'informations dont les
  * éléments sont de type T
  * @author prou
+ * @param <T> le type des éléments de l'information
  */
 public  abstract class Destination <T> implements DestinationInterface <T> {
     /** 

@@ -3,8 +3,9 @@ package information;
 import java.util.*;
 
 /** 
- *  
+ * La classe Information permet de construire une information composée d'éléments de type T. *  
  * @author prou
+ * @param <T> le type des éléments de l'information
  */	
 public  class Information <T>  implements Iterable <T> {
    

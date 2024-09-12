@@ -16,7 +16,12 @@ public class SondePuissance extends Sonde <Float> {
     public SondePuissance(String nom) {
         super(nom);
     }
-        
+    
+    /**
+     * pour recevoir et afficher l'information transmise par la source
+     * qui nous est connectée
+     * @param information  l'information  à recevoir
+     */
     public void recevoir (Information <Float> information) { 
         informationRecue = information;
         int nbElements = information.nbElements();

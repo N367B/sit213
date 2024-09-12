@@ -40,6 +40,7 @@ public class SourceFixe extends Source<Boolean> {
     }
     /**
      * Main, vérification de la classe SourceFixe
+     * @param args les arguments
      */
     public static void main(String[] args) {
         SourceFixe source = new SourceFixe("11001");
