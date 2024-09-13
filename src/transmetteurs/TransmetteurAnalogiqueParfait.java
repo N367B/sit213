@@ -32,6 +32,7 @@ public class TransmetteurAnalogiqueParfait extends TransmetteurAnalogique<Float,
 
         this.informationRecue = information;
         this.informationEmise = informationRecue;
+        this.emettre();
     }
 
     /**

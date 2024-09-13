@@ -29,9 +29,9 @@ public class TransmetteurParfait extends Transmetteur <Boolean, Boolean> {
         if(information == null) {
             throw new InformationNonConformeException();
         }
-
         this.informationRecue = information;
         this.informationEmise = informationRecue;
+        this.emettre();
         
     }
     

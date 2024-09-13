@@ -42,7 +42,19 @@ public class Simulateur {
     
     /** le composant Destination de la chaine de transmission */
     private Destination<Boolean> destination = null;
-       
+    
+    /** le type de modulation à utiliser (NRZ, NRZT, RZ) */
+    private String typeModulation = "RZ";
+    
+    /** L'amplitude du signal analogique pour représenter un bit '1'. */
+    private float Amax = 1.0f;
+    
+    /** L'amplitude du signal analogique pour représenter un bit '0'. */
+    private float Amin = 0.0f;
+    
+    /** le nombre d'échantillons par bit */
+    private int nbEchantillonsParBit = 30;
+
     /** Le constructeur de Simulateur construit une chaîne de
      * transmission composée d'une Source &lt;Boolean&gt;, d'une Destination
      * &lt;Boolean&gt; et de Transmetteur(s) [voir la méthode
@@ -66,16 +78,25 @@ public class Simulateur {
         } else {
             source = new SourceFixe(messageString);
         }
+        
         transmetteurLogique = new TransmetteurParfait();
         source.connecter(transmetteurLogique);
         destination = new DestinationFinale();
         transmetteurLogique.connecter(destination);
+        
         if (affichage) {
             source.connecter(new SondeLogique("Source", 200));
             transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
         }
     }
-   
+    
+    
+    private void simulateurLogiqueParfait() {
+    }
+    
+	private void simulateurAnalogiqueParfait() {
+	}
+	
     /** La méthode analyseArguments extrait d'un tableau de chaînes de
      * caractères les différentes options de la simulation.  <br>Elle met
      * à jour les attributs correspondants du Simulateur.
@@ -121,6 +142,31 @@ public class Simulateur {
                 } else {
                     throw new ArgumentsException("Valeur du parametre -mess invalide : " + args[i]);
                 }
+            } else if (args[i].matches("-form")) {
+                i++;
+                typeModulation = args[i]; // NRZ, NRZT, or RZ
+                if (!typeModulation.matches("NRZ|NRZT|RZ")) {
+                    throw new ArgumentsException("Valeur du parametre -form invalide : " + typeModulation);
+                }
+            } else if (args[i].matches("-nbEch")) {
+                i++;
+                try {
+                    nbEchantillonsParBit = Integer.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du parametre -nbEch invalide : " + args[i]);
+                }
+            } else if (args[i].matches("-ampl")) {
+                i++;
+                try {
+                    Amin = Float.valueOf(args[i]);
+                    i++;
+                    Amax = Float.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du parametre -ampl invalide : " + args[i]);
+                }
+                if (Amin >= Amax) {
+                    throw new ArgumentsException("Valeur du parametre -ampl invalide : Amin doit être inférieur à Amax");
+                }
             } else {
                 throw new ArgumentsException("Option invalide : " + args[i]);
             }
@@ -133,9 +179,9 @@ public class Simulateur {
      */
     public void execute() throws Exception {      
         source.emettre();
-        transmetteurLogique.recevoir(source.getInformationEmise());
-        transmetteurLogique.emettre();
-        destination.recevoir(transmetteurLogique.getInformationEmise());
+        //transmetteurLogique.recevoir(source.getInformationEmise());
+        //transmetteurLogique.emettre();
+        //destination.recevoir(transmetteurLogique.getInformationEmise());
     }
    
     /** La méthode qui calcule le taux d'erreur binaire en comparant
