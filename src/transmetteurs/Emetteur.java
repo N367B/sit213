@@ -43,13 +43,14 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      * @param nbEchantillonsParBit Le nombre d'échantillons par bit.
      * @param typeModulation     Le type de modulation à utiliser ("NRZ", "NRZT", ou "RZ").
      */
-    public Emetteur(float Amax, float Amin, int nbEchantillonsParBit, String typeModulation) {
+    public Emetteur(float Amin, float Amax, int nbEchantillonsParBit, String typeModulation) {
     	super();
         this.Amax = Amax;
         this.Amin = Amin;
         this.nbEchantillonsParBit = nbEchantillonsParBit;
         this.typeModulation = typeModulation;
         this.informationAnalogique = new Information<Float>();
+        //System.out.println("Amax: " + Amax + ", Amin: " + Amin + ", nbEchantillonsParBit: " + nbEchantillonsParBit + ", typeModulation: " + typeModulation);
     }
 
     /**
@@ -97,7 +98,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
                     throw new InformationNonConformeException("Type de modulation inconnu : " + typeModulation);
             }
         }
-
+        //System.out.println("Signal Analogique Emis: " + informationAnalogique);
         // Une fois l'information analogique créée, elle est émise
         this.informationEmise = informationAnalogique;
         for (DestinationInterface<Float> destination : destinationsConnectees) {
@@ -112,6 +113,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      */
     private void convertNRZ(Boolean bit) {
         float amplitude = bit ? Amax : Amin;
+        //System.out.println("Bit: " + bit + " -> Amplitude: " + amplitude);
         for (int i = 0; i < nbEchantillonsParBit; i++) {
             informationAnalogique.add(amplitude);
         }

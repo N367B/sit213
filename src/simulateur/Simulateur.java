@@ -40,11 +40,19 @@ public class Simulateur {
     /** le composant Transmetteur parfait logique de la chaine de transmission */
     private Transmetteur<Boolean, Boolean> transmetteurLogique = null;
     
+    /** le composant Transmetteur parfait analogique de la chaine de transmission */
+    private TransmetteurAnalogiqueParfait transmetteurAnalogique = null;
+    
+    /** L'emetteur de la chaine de transmission */
+    private Emetteur emetteur = null;
+    /** Le recepteur de la chaine de transmission */
+    private Recepteur recepteur = null;
+    
     /** le composant Destination de la chaine de transmission */
     private Destination<Boolean> destination = null;
     
     /** le type de modulation à utiliser (NRZ, NRZT, RZ) */
-    private String typeModulation = "RZ";
+    private String typeModulation = null;
     
     /** L'amplitude du signal analogique pour représenter un bit '1'. */
     private float Amax = 1.0f;
@@ -79,6 +87,16 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
+		if (typeModulation == null) {
+			simulateurLogiqueParfait();
+		} else {
+			simulateurAnalogiqueParfait();
+		}
+
+    }
+    
+    
+    private void simulateurLogiqueParfait() {
         transmetteurLogique = new TransmetteurParfait();
         source.connecter(transmetteurLogique);
         destination = new DestinationFinale();
@@ -90,11 +108,23 @@ public class Simulateur {
         }
     }
     
-    
-    private void simulateurLogiqueParfait() {
-    }
-    
 	private void simulateurAnalogiqueParfait() {
+		emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+		source.connecter(emetteur);
+		transmetteurAnalogique = new TransmetteurAnalogiqueParfait();
+		emetteur.connecter(transmetteurAnalogique);
+		recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+		transmetteurAnalogique.connecter(recepteur);
+		destination = new DestinationFinale();
+		recepteur.connecter(destination);
+		
+		if (affichage) {
+            source.connecter(new SondeLogique("Source", 200));
+            emetteur.connecter(new SondeAnalogique("Emetteur"));
+            transmetteurAnalogique.connecter(new SondeAnalogique("Transmetteur"));
+            recepteur.connecter(new SondeLogique("Recepteur", 200));
+		}
+		
 	}
 	
     /** La méthode analyseArguments extrait d'un tableau de chaînes de

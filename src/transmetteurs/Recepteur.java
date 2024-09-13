@@ -55,6 +55,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      */
     @Override
     public void recevoir(Information<Float> information) throws InformationNonConformeException {
+    	//System.out.println("Signal Analogique Reçu: " + this.informationRecue);
         if (information == null) {
             throw new InformationNonConformeException("L'information reçue est nulle.");
         }
