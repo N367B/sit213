@@ -1,6 +1,5 @@
 package sources;
 
-import destinations.DestinationInterface;
 import information.Information;
 
 /**

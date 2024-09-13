@@ -10,7 +10,7 @@ import information.Information;
  */
 public class SourceAleatoire extends Source<Boolean> {
     
-    private int tailleListe;  // La taille de la liste de booléens à générer
+    //private int tailleListe;  // La taille de la liste de booléens à générer
 
     /**
      * Constructeur de la classe {@code SourceAleatoire} qui génère une liste de booléens aléatoires

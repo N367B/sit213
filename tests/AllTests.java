@@ -2,12 +2,11 @@
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import sources.SourceAleatoireTest;
-import sources.SourceFixeTest;
-import transmetteurs.TransmetteurParfaitTest;
-import destinations.DestinationFinaleTest;
-import information.InformationTest;
-import simulateur.SimulateurTest;
+import sources.*;
+import transmetteurs.*;
+import destinations.*;
+import information.*;
+import simulateur.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -16,7 +15,10 @@ import simulateur.SimulateurTest;
     TransmetteurParfaitTest.class,
     DestinationFinaleTest.class,
     InformationTest.class,
-    SimulateurTest.class
+    SimulateurTest.class,
+    EmetteurTest.class,
+    TransmetteurAnalogiqueParfaitTest.class,
+    RecepteurTest.class
 })
 public class AllTests {
 }

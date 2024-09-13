@@ -218,12 +218,11 @@ public class Simulateur {
      * les bits du message émis avec ceux du message reçu.
      * @return La valeur du Taux d'Erreur Binaire.
      */   	   
-    public float calculTauxErreurBinaire() {
+    public float calculTauxErreurBinaire() throws Exception{
         Information<Boolean> informationEmise = source.getInformationEmise();
         Information<Boolean> informationRecue = destination.getInformationRecue();
         if (informationRecue == null) {
-            System.err.println("Erreur : informationRecue est null. La transmission n'a peut-être pas encore eu lieu.");
-            return -1.0f;
+        	throw new Exception("Aucune information reçue");
         }
         int nbErreurs = 0;
         for (int i = 0; i < informationEmise.nbElements(); i++) {

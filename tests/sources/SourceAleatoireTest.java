@@ -3,10 +3,7 @@ package sources;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import sources.SourceAleatoire;
 import information.Information;
-
-import java.util.Random;
 
 public class SourceAleatoireTest {
 
