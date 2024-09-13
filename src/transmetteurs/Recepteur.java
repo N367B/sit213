@@ -142,6 +142,10 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
         }
     }
 
+/**
+ * Main method to test the receiver.
+ * @param args The command line arguments.
+ */
     public static void main(String[] args) {
         try {
         	String typeModulation = "NRZT";

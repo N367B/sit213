@@ -10,6 +10,12 @@ import information.*;
  */
 public class TransmetteurAnalogiqueParfait extends  Transmetteur<Float, Float> {
 
+	/**
+	 * Constructeur de la classe TransmetteurAnalogiqueParfait
+	 */
+	public TransmetteurAnalogiqueParfait() {
+		super();
+	}
 
 
     /**
@@ -39,6 +45,6 @@ public class TransmetteurAnalogiqueParfait extends  Transmetteur<Float, Float> {
         for (DestinationInterface<Float> destinationConnectee : destinationsConnectees) {
             destinationConnectee.recevoir(informationEmise);
         }
-        System.out.println("Transmetteur Analogique Emis: " + this.informationEmise);
+        //System.out.println("Transmetteur Analogique Emis: " + this.informationEmise);
     }
 }
