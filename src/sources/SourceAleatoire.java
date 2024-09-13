@@ -23,7 +23,6 @@ public class SourceAleatoire extends Source<Boolean> {
         informationGeneree = new Information<Boolean>();
         // informationEmise = new Information<Boolean>();  // Utilisation de la classe Information
         Random random = new Random();
-
         // Générer la liste de booléens aléatoires
         for (int i = 0; i < tailleListe; i++) {
             informationGeneree.add(random.nextBoolean());

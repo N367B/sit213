@@ -1,10 +1,9 @@
 package transmetteurs;
 
-import information.Information;
-import information.InformationNonConformeException;
-import destinations.DestinationInterface;
-import visualisations.Sonde;
-import visualisations.SondeAnalogique;
+import information.*;
+import destinations.*;
+import visualisations.*;
+import sources.*;
 
 /**
  * La classe Emetteur permet de convertir une information logique (booléenne) en un signal analogique.
@@ -84,7 +83,6 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             Boolean bitCourant = informationRecue.iemeElement(i);
             Boolean bitPrecedent = (i > 0) ? informationRecue.iemeElement(i - 1) : null;
             Boolean bitSuivant = (i < informationRecue.nbElements() - 1) ? informationRecue.iemeElement(i + 1) : null;
-
             switch (typeModulation) {
                 case "NRZ":
                     convertNRZ(bitCourant);
@@ -126,35 +124,56 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      * @param bitSuivant Le bit suivant pour vérifier la continuité.
      */
     private void convertNRZT(Boolean bitCourant, Boolean bitPrecedent, Boolean bitSuivant) {
-        for (int i = 0; i < nbEchantillonsParBit; i++) {
+        float moy = (Amax + Amin) / 2;
+        int nbEchTiersBit = nbEchantillonsParBit / 3;
+        float quantum = (Amax - moy) / nbEchTiersBit; // Pente pour la montée/descente
+
+        // Affichage de debug pour vérifier les bits précédents et suivants
+        System.out.println("----------------------====================----------------");
+        System.out.println("Bit courant: " + bitCourant + ", Bit précédent: " + bitPrecedent + ", Bit suivant: " + bitSuivant);
+
+        // Premier tiers : montée/descente si le bit précédent est différent, sinon plat
+        for (int i = 0; i < nbEchTiersBit; i++) {
             float amplitude;
-            
-            // Cas où il y a un changement entre le bit précédent et le bit courant
+
             if (bitPrecedent != null && !bitPrecedent.equals(bitCourant)) {
-                if (i < nbEchantillonsParBit / 3) {
-                    // Transition ascendante ou descendante du bit précédent au bit courant
-                    amplitude = bitCourant ? Amax * (i / (float) (nbEchantillonsParBit / 3)) : Amin * (i / (float) (nbEchantillonsParBit / 3));
-                } else {
-                    amplitude = bitCourant ? Amax : Amin;
-                }
-            }
-            // Cas où il y a un changement entre le bit courant et le bit suivant
-            else if (bitSuivant != null && !bitSuivant.equals(bitCourant)) {
-                if (i > 2 * nbEchantillonsParBit / 3) {
-                    // Transition descendante ou ascendante vers le bit suivant
-                    amplitude = bitCourant ? Amax * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3)) : Amin * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3));
-                } else {
-                    amplitude = bitCourant ? Amax : Amin;
-                }
-            }
-            // Cas où il n'y a pas de changement (pente plate)
-            else {
+                // Transition progressive : montée si bitCourant = 1, descente si bitCourant = 0
+                amplitude = bitCourant ? moy + (quantum * i) : moy - (quantum * i);
+                //System.out.println("Premier tiers - Transition (i=" + i + "): amplitude = " + amplitude);
+            } else {
+                // Aucun changement, conserver le niveau stable
                 amplitude = bitCourant ? Amax : Amin;
+                //System.out.println("Premier tiers - Stable (i=" + i + "): amplitude = " + amplitude);
+            }
+
+            informationAnalogique.add(amplitude);
+        }
+
+        // Deuxième tiers : niveau stable correspondant au bit courant (plat)
+        float amplitudeStable = bitCourant ? Amax : Amin;
+        for (int i = 0; i < nbEchTiersBit; i++) {
+            informationAnalogique.add(amplitudeStable);
+            //System.out.println("Deuxième tiers (i=" + i + "): amplitude = " + amplitudeStable);
+        }
+
+        // Troisième tiers : montée/descente si le bit suivant est différent, sinon plat
+        for (int i = 0; i < nbEchTiersBit; i++) {
+            float amplitude;
+
+            if (bitSuivant != null && !bitSuivant.equals(bitCourant)) {
+                // Transition progressive : descente si bitCourant = 1, montée si bitCourant = 0
+                amplitude = bitCourant ? Amax - (quantum * i) : Amin + (quantum * i);
+                //System.out.println("Troisième tiers - Transition (i=" + i + "): amplitude = " + amplitude);
+            } else {
+                // Aucun changement, conserver le niveau stable
+                amplitude = bitCourant ? Amax : Amin;
+                //System.out.println("Troisième tiers - Stable (i=" + i + "): amplitude = " + amplitude);
             }
 
             informationAnalogique.add(amplitude);
         }
     }
+
 
 
     private void convertRZ(Boolean bit) {
@@ -169,6 +188,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             informationAnalogique.add(amplitude);
         }
         // Troisième tiers : 0
+        
         for (int i = 0; i < nbEchTiersBit; i++) {
             informationAnalogique.add(0.0f); 
         }
@@ -180,35 +200,35 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 
             // Sample logical information
             Information<Boolean> infoLogique = new Information<>();
-            infoLogique.add(true);
-            infoLogique.add(false);
-            infoLogique.add(true);
-            infoLogique.add(true);
-            infoLogique.add(false);
-
+            
+            //SourceFixe source = new SourceFixe("10110");
+            SourceFixe source = new SourceFixe("01111000101100");
+            System.out.println(source.getInformationGeneree());
+            infoLogique = source.getInformationGeneree();
+            
             // Test NRZ conversion
             Emetteur emetteurNRZ = new Emetteur(1.0f, 0.0f, 30, "NRZ");
-            emetteurNRZ.recevoir(infoLogique);
-            Information<Float> signalNRZ = emetteurNRZ.getInformationEmise();
-            System.out.println("Signal NRZ: " + signalNRZ);
+            //Information<Float> signalNRZ = emetteurNRZ.getInformationEmise();
+            //System.out.println("Signal NRZ: " + signalNRZ);
             emetteurNRZ.connecter(new SondeAnalogique("Sonde NRZ"));
-            emetteurNRZ.emettre();
+            emetteurNRZ.recevoir(infoLogique);
+            //emetteurNRZ.emettre();
 
             // Test NRZT conversion
-            Emetteur emetteurNRZT = new Emetteur(1.0f, -1.0f, 30, "NRZT");
-            emetteurNRZT.recevoir(infoLogique);
-            Information<Float> signalNRZT = emetteurNRZT.getInformationEmise();
-            System.out.println("Signal NRZT: " + signalNRZT);
+            Emetteur emetteurNRZT = new Emetteur(1.0f, 0.0f, 30, "NRZT");
+            //Information<Float> signalNRZT = emetteurNRZT.getInformationEmise();
+            //System.out.println("Signal NRZT: " + signalNRZT);
             emetteurNRZT.connecter(new SondeAnalogique("Sonde NRZT"));
-            emetteurNRZT.emettre();
+            emetteurNRZT.recevoir(infoLogique);
+            //emetteurNRZT.emettre();
 
             // Test RZ conversion
             Emetteur emetteurRZ = new Emetteur(1.0f, 0.0f, 30, "RZ");
-            emetteurRZ.recevoir(infoLogique);
-            Information<Float> signalRZ = emetteurRZ.getInformationEmise();
-            System.out.println("Signal RZ: " + signalRZ);
+            //Information<Float> signalRZ = emetteurRZ.getInformationEmise();
+            //System.out.println("Signal RZ: " + signalRZ);
             emetteurRZ.connecter(new SondeAnalogique("Sonde RZ"));
-            emetteurRZ.emettre();
+            emetteurRZ.recevoir(infoLogique);
+            //emetteurRZ.emettre();
 
         } catch (InformationNonConformeException e) {
             System.err.println("Error during conversion: " + e.getMessage());
