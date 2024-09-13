@@ -129,8 +129,8 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
         float quantum = (Amax - moy) / nbEchTiersBit; // Pente pour la montée/descente
 
         // Affichage de debug pour vérifier les bits précédents et suivants
-        System.out.println("----------------------====================----------------");
-        System.out.println("Bit courant: " + bitCourant + ", Bit précédent: " + bitPrecedent + ", Bit suivant: " + bitSuivant);
+        //System.out.println("----------------------====================----------------");
+        //System.out.println("Bit courant: " + bitCourant + ", Bit précédent: " + bitPrecedent + ", Bit suivant: " + bitSuivant);
 
         // Premier tiers : montée/descente si le bit précédent est différent, sinon plat
         for (int i = 0; i < nbEchTiersBit; i++) {
