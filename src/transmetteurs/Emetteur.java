@@ -75,21 +75,25 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      */
     @Override
     public void emettre() throws InformationNonConformeException {
-        if (informationRecue == null) {
+        if (informationRecue == null || informationRecue.nbElements() == 0) {
             throw new InformationNonConformeException("Aucune information n'a été reçue.");
         }
 
         // Conversion en fonction du type de modulation
-        for (Boolean bit : informationRecue) {
+        for (int i = 0; i < informationRecue.nbElements(); i++) {
+            Boolean bitCourant = informationRecue.iemeElement(i);
+            Boolean bitPrecedent = (i > 0) ? informationRecue.iemeElement(i - 1) : null;
+            Boolean bitSuivant = (i < informationRecue.nbElements() - 1) ? informationRecue.iemeElement(i + 1) : null;
+
             switch (typeModulation) {
                 case "NRZ":
-                    convertNRZ(bit);
+                    convertNRZ(bitCourant);
                     break;
                 case "NRZT":
-                    convertNRZT(bit);
+                    convertNRZT(bitCourant, bitPrecedent, bitSuivant); // Prend en compte les bits précédent et suivant
                     break;
                 case "RZ":
-                    convertRZ(bit);
+                    convertRZ(bitCourant);
                     break;
                 default:
                     throw new InformationNonConformeException("Type de modulation inconnu : " + typeModulation);
@@ -102,6 +106,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             destination.recevoir(informationEmise);
         }
     }
+
 
     /**
      * Convertit un bit en signal analogique selon la modulation NRZ (Non Return to Zero).
@@ -116,33 +121,56 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 
     /**
      * Convertit un bit en signal analogique selon la modulation NRZT (Non Return to Zero Transition).
-     * @param bit Le bit à convertir.
+     * @param bitCourant Le bit à convertir.
+     * @param bitPrecedent Le bit précédent pour vérifier la continuité.
+     * @param bitSuivant Le bit suivant pour vérifier la continuité.
      */
-    private void convertNRZT(Boolean bit) {
+    private void convertNRZT(Boolean bitCourant, Boolean bitPrecedent, Boolean bitSuivant) {
         for (int i = 0; i < nbEchantillonsParBit; i++) {
             float amplitude;
-            if (i < nbEchantillonsParBit / 3) {
-                amplitude = bit ? Amax * (i / (float) (nbEchantillonsParBit / 3)) : Amin * (i / (float) (nbEchantillonsParBit / 3));
-            } else if (i > 2 * nbEchantillonsParBit / 3) {
-                amplitude = bit ? Amax * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3)) : Amin * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3));
-            } else {
-                amplitude = bit ? Amax : Amin;
+            
+            // Cas où il y a un changement entre le bit précédent et le bit courant
+            if (bitPrecedent != null && !bitPrecedent.equals(bitCourant)) {
+                if (i < nbEchantillonsParBit / 3) {
+                    // Transition ascendante ou descendante du bit précédent au bit courant
+                    amplitude = bitCourant ? Amax * (i / (float) (nbEchantillonsParBit / 3)) : Amin * (i / (float) (nbEchantillonsParBit / 3));
+                } else {
+                    amplitude = bitCourant ? Amax : Amin;
+                }
             }
+            // Cas où il y a un changement entre le bit courant et le bit suivant
+            else if (bitSuivant != null && !bitSuivant.equals(bitCourant)) {
+                if (i > 2 * nbEchantillonsParBit / 3) {
+                    // Transition descendante ou ascendante vers le bit suivant
+                    amplitude = bitCourant ? Amax * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3)) : Amin * ((nbEchantillonsParBit - i) / (float) (nbEchantillonsParBit / 3));
+                } else {
+                    amplitude = bitCourant ? Amax : Amin;
+                }
+            }
+            // Cas où il n'y a pas de changement (pente plate)
+            else {
+                amplitude = bitCourant ? Amax : Amin;
+            }
+
             informationAnalogique.add(amplitude);
         }
     }
 
-    /**
-     * Convertit un bit en signal analogique selon la modulation RZ (Return to Zero).
-     * @param bit Le bit à convertir.
-     */
+
     private void convertRZ(Boolean bit) {
-        float amplitude = bit ? Amax : Amin;
-        for (int i = 0; i < nbEchantillonsParBit / 2; i++) {
+        float amplitude = bit ? Amax : 0.0f;  // '1' -> Amax, '0' -> 0
+        int nbEchTiersBit = nbEchantillonsParBit / 3;
+        // Premier tiers : 0
+        for (int i = 0; i < nbEchTiersBit; i++) {
+            informationAnalogique.add(0.0f);
+        }
+        // Deuxième tiers : amplitude si bit = 1, 0 sinon
+        for (int i = 0; i < nbEchTiersBit; i++) {
             informationAnalogique.add(amplitude);
         }
-        for (int i = nbEchantillonsParBit / 2; i < nbEchantillonsParBit; i++) {
-            informationAnalogique.add(0f); // Retourne à zéro après la première moitié du bit
+        // Troisième tiers : 0
+        for (int i = 0; i < nbEchTiersBit; i++) {
+            informationAnalogique.add(0.0f); 
         }
     }
     
@@ -159,7 +187,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             infoLogique.add(false);
 
             // Test NRZ conversion
-            Emetteur emetteurNRZ = new Emetteur(1.0f, 0.0f, 10, "NRZ");
+            Emetteur emetteurNRZ = new Emetteur(1.0f, 0.0f, 30, "NRZ");
             emetteurNRZ.recevoir(infoLogique);
             Information<Float> signalNRZ = emetteurNRZ.getInformationEmise();
             System.out.println("Signal NRZ: " + signalNRZ);
@@ -167,7 +195,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             emetteurNRZ.emettre();
 
             // Test NRZT conversion
-            Emetteur emetteurNRZT = new Emetteur(1.0f, -1.0f, 10, "NRZT");
+            Emetteur emetteurNRZT = new Emetteur(1.0f, -1.0f, 30, "NRZT");
             emetteurNRZT.recevoir(infoLogique);
             Information<Float> signalNRZT = emetteurNRZT.getInformationEmise();
             System.out.println("Signal NRZT: " + signalNRZT);
@@ -175,7 +203,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             emetteurNRZT.emettre();
 
             // Test RZ conversion
-            Emetteur emetteurRZ = new Emetteur(1.0f, 0.0f, 10, "RZ");
+            Emetteur emetteurRZ = new Emetteur(1.0f, 0.0f, 30, "RZ");
             emetteurRZ.recevoir(infoLogique);
             Information<Float> signalRZ = emetteurRZ.getInformationEmise();
             System.out.println("Signal RZ: " + signalRZ);
