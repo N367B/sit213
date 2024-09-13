@@ -13,6 +13,6 @@ ARCHIVE="${NOM1}-${NOM2}-${NOM3}-${NOM4}-SIT213-Etape${ETAPE}.tar.gz"
 ./cleanAll
 
 # Création de l'archive
-tar -czvf "$ARCHIVE" * 
+tar --exclude='genDeliverable' -czvf "$ARCHIVE" * 
 
 echo "Livrable créé : $ARCHIVE"
