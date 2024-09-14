@@ -217,6 +217,7 @@ public class Simulateur {
     /** La méthode qui calcule le taux d'erreur binaire en comparant
      * les bits du message émis avec ceux du message reçu.
      * @return La valeur du Taux d'Erreur Binaire.
+     * @throws Exception si un problème survient lors du calcul.
      */   	   
     public float calculTauxErreurBinaire() throws Exception{
         Information<Boolean> informationEmise = source.getInformationEmise();
