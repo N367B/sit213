@@ -161,4 +161,12 @@ public class EmetteurTest {
         emetteurNRZ.deconnecter(mockDestination);
         assertFalse(emetteurNRZ.getDestinationsConnectees().contains(mockDestination));
     }
+    
+	/**
+	 * Test main method.
+	 */
+        @Test
+            public void testMain() {
+        	                Emetteur.main(null);
+        }
 }

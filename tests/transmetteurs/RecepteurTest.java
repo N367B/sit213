@@ -157,4 +157,11 @@ public class RecepteurTest {
         // Verify the output
         assertEquals(expectedInformation, mockDestination.getInformationRecue());
     }
+	/**
+	 * Test main method.
+	 */
+        @Test
+            public void testMain() {
+        	                Recepteur.main(null);
+        }
 }
