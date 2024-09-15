@@ -21,6 +21,7 @@ public class DestinationFinale extends Destination<Boolean> {
 	 * @param information L'information reçue
 	 * @throws InformationNonConformeException si l'Information comporte une anomalie
 	 */
+	@Override
     public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
         if (information == null || information.nbElements() == 0) {
             throw new InformationNonConformeException("L'information est vide ou non conforme.");

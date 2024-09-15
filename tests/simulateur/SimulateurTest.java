@@ -184,5 +184,4 @@ public class SimulateurTest {
         simulateur.calculTauxErreurBinaire();
     }
 
-    
 }

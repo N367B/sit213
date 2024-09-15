@@ -156,7 +156,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
             
             // Generate a logical information
             SourceFixe source = new SourceFixe("01111000101100");
-            System.out.println(source.getInformationGeneree());
+            //System.out.println(source.getInformationGeneree());
             infoLogique = source.getInformationGeneree();
             
             // Convert the logical information to analog
@@ -170,7 +170,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
             recepteur.connecter(new SondeLogique("Sonde logique", 200));
             recepteur.recevoir(infoAnalogique);
             recepteur.emettre();
-            System.out.println(recepteur.getInformationEmise());
+            //System.out.println(recepteur.getInformationEmise());
         } catch (InformationNonConformeException e) {
             System.err.println("Error during demodulation: " + e.getMessage());
         }

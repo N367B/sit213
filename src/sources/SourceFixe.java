@@ -43,6 +43,6 @@ public class SourceFixe extends Source<Boolean> {
      */
     public static void main(String[] args) {
         SourceFixe source = new SourceFixe("11001");
-        System.out.println(source.informationGeneree);
+        //System.out.println(source.informationGeneree);
     }
 }

@@ -1,9 +1,9 @@
 package transmetteurs;
 
-import information.*;
 import destinations.*;
-import visualisations.*;
+import information.*;
 import sources.*;
+import visualisations.*;
 
 /**
  * La classe Emetteur permet de convertir une information logique (booléenne) en un signal analogique.
@@ -211,7 +211,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             
             //SourceFixe source = new SourceFixe("10110");
             SourceFixe source = new SourceFixe("01111000101100");
-            System.out.println(source.getInformationGeneree());
+            //System.out.println(source.getInformationGeneree());
             infoLogique = source.getInformationGeneree();
             
             // Test NRZ conversion

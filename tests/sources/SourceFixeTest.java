@@ -81,4 +81,11 @@ public class SourceFixeTest {
 			sourceFixe.deconnecter(destinationTest);
 			assertEquals(0, sourceFixe.destinationsConnectees.size());
 		}
+    	/**
+    	 * Test main method.
+    	 */
+            @Test
+                public void testMain() {
+            		SourceFixe.main(null);
+            }
 }

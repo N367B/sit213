@@ -91,4 +91,11 @@ public class SourceAleatoireTest {
         assertNotNull(informationGeneree);
         assertEquals(0, informationGeneree.nbElements());
     }
+	/**
+	 * Test main method.
+	 */
+        @Test
+            public void testMain() {
+        		SourceAleatoire.main(null);
+        }
 }

@@ -72,6 +72,6 @@ public class SourceAleatoire extends Source<Boolean> {
      */
     public static void main(String[] args) {
         SourceAleatoire sourceAleatoire = new SourceAleatoire(10);
-        System.out.println("Liste de booléens aléatoires générée: " + sourceAleatoire.informationGeneree);
+        //System.out.println("Liste de booléens aléatoires générée: " + sourceAleatoire.informationGeneree);
     }    
 }
