@@ -130,6 +130,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      */
     private void convertNRZT(Boolean bitCourant, Boolean bitPrecedent, Boolean bitSuivant) {
         float moy = (Amax + Amin) / 2;
+		if (nbEchantillonsParBit % 3 != 0) {
+			throw new IllegalArgumentException("Le nombre d'échantillons par bit doit être divisible par 3.");
+		}
         int nbEchTiersBit = nbEchantillonsParBit / 3;
         float quantum = (Amax - moy) / nbEchTiersBit; // Pente pour la montée/descente
 
@@ -182,6 +185,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 
 
     private void convertRZ(Boolean bit) {
+		if (nbEchantillonsParBit % 3 != 0) {
+			throw new IllegalArgumentException("Le nombre d'échantillons par bit doit être divisible par 3.");
+		}
         float amplitude = bit ? Amax : 0.0f;  // '1' -> Amax, '0' -> 0
         //System.out.println("Bit: " + bit + " -> Amplitude: " + amplitude + ", nbEchTiersBit: " + nbEchantillonsParBit / 3);
         int nbEchTiersBit = nbEchantillonsParBit / 3;
