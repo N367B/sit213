@@ -56,7 +56,7 @@ public class RecepteurTest {
      */
     @Test
     public void testRecevoirAndEmettreRZ() throws InformationNonConformeException {
-        recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, "RZ");
+        recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, "RZ");
 
         // Create a sample RZ signal
         Information<Float> infoAnalogique = new Information<>();

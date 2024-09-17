@@ -38,7 +38,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      * @param nbEchantillonsParBit Le nombre d'échantillons par bit.
      * @param typeModulation     Le type de modulation utilisé ("NRZ", "NRZT", ou "RZ").
      */
-    public Recepteur(float Amax, float Amin, int nbEchantillonsParBit, String typeModulation) {
+    public Recepteur(float Amin, float Amax, int nbEchantillonsParBit, String typeModulation) {
         super();
         this.Amax = Amax;
         this.Amin = Amin;
@@ -74,7 +74,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
         }
 
         Information<Boolean> informationLogique = new Information<>();
-
+    	//System.out.println("Type de Modulation: " + typeModulation);
         // Conversion en fonction du type de modulation
         switch (typeModulation) {
             case "NRZ":
@@ -129,8 +129,10 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 
     /**
      * Convertit un signal analogique en signal logique selon la modulation RZ.
+     * @param informationLogique L'information logique à émettre.
      */
     private void convertRZ(Information<Boolean> informationLogique) throws InformationNonConformeException {
+    	Amin = 0.0f;
         for (int i = 0; i < informationRecue.nbElements(); i += nbEchantillonsParBit) {
             float moyenne = 0;
             // Moyenne des échantillons du deuxième tiers pour déterminer s'il s'agit d'un '1' ou '0'
@@ -142,37 +144,45 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
         }
     }
 
-/**
- * Main method to test the receiver.
- * @param args The command line arguments.
- */
+	/**
+	 * Fonction principale pour tester le récepteur avec la modulation RZ.
+	 * @param args Les arguments de la ligne de commande.
+	 * 
+	 */
     public static void main(String[] args) {
         try {
-        	String typeModulation = "NRZT";
-            // Sample analog signal
-            Information<Float> infoAnalogique = new Information<>();
-            // Sample logical information
-            Information<Boolean> infoLogique = new Information<>();
+            // Définir les paramètres de la modulation RZ
+            String typeModulation = "RZ";
+            float Amax = 1.0f;
+            float Amin = -1.0f;
+            int nbEchantillonsParBit = 30;
             
-            // Generate a logical information
+            // Créer un message fixe (message logique)
             SourceFixe source = new SourceFixe("01111000101100");
-            //System.out.println(source.getInformationGeneree());
-            infoLogique = source.getInformationGeneree();
-            
-            // Convert the logical information to analog
-            Emetteur emetteur = new Emetteur(1.0f, 0.0f, 30, typeModulation);
-            emetteur.connecter(new SondeAnalogique(typeModulation));
+            Information<Boolean> infoLogique = source.getInformationGeneree();
+            //System.out.println("Message logique émis : " + infoLogique);
+
+            // Convertir le message logique en signal analogique avec l'émetteur
+            Emetteur emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+            emetteur.connecter(new SondeAnalogique("Signal Analogique émis"));
             emetteur.recevoir(infoLogique);
-            infoAnalogique = emetteur.getInformationEmise();
+            Information<Float> infoAnalogique = emetteur.getInformationEmise();
+            //System.out.println("Signal analogique émis : " + infoAnalogique);
+
+            // Créer le récepteur pour la modulation RZ
+            Recepteur recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, typeModulation);
+            recepteur.connecter(new SondeLogique("Signal Logique reçu", 200));
             
-            // Test the receiver
-            Recepteur recepteur = new Recepteur(1.0f, 0.0f, 30, typeModulation);
-            recepteur.connecter(new SondeLogique("Sonde logique", 200));
+            // Recevoir le signal analogique et le convertir en message logique
             recepteur.recevoir(infoAnalogique);
-            recepteur.emettre();
-            //System.out.println(recepteur.getInformationEmise());
+
+            // Afficher le message logique reçu
+            Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
+            //System.out.println("Message logique reçu : " + infoLogiqueRecue);
+
         } catch (InformationNonConformeException e) {
-            System.err.println("Error during demodulation: " + e.getMessage());
+            System.err.println("Erreur lors de la démodulation : " + e.getMessage());
         }
     }
+
 }

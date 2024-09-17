@@ -209,6 +209,7 @@ public class Simulateur {
      */
     public void execute() throws Exception {      
         source.emettre();
+        //System.out.println(typeModulation);
         //transmetteurLogique.recevoir(source.getInformationEmise());
         //transmetteurLogique.emettre();
         //destination.recevoir(transmetteurLogique.getInformationEmise());

@@ -45,6 +45,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
      */
     public Emetteur(float Amin, float Amax, int nbEchantillonsParBit, String typeModulation) {
     	super();
+		if (Amax <= Amin) {
+			throw new IllegalArgumentException("Amax doit être supérieur à Amin.");
+		}
         this.Amax = Amax;
         this.Amin = Amin;
         this.nbEchantillonsParBit = nbEchantillonsParBit;
@@ -180,6 +183,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 
     private void convertRZ(Boolean bit) {
         float amplitude = bit ? Amax : 0.0f;  // '1' -> Amax, '0' -> 0
+        //System.out.println("Bit: " + bit + " -> Amplitude: " + amplitude + ", nbEchTiersBit: " + nbEchantillonsParBit / 3);
         int nbEchTiersBit = nbEchantillonsParBit / 3;
         // Premier tiers : 0
         for (int i = 0; i < nbEchTiersBit; i++) {
@@ -215,7 +219,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             infoLogique = source.getInformationGeneree();
             
             // Test NRZ conversion
-            Emetteur emetteurNRZ = new Emetteur(1.0f, 0.0f, 30, "NRZ");
+            Emetteur emetteurNRZ = new Emetteur(0.0f, 1.0f, 30, "NRZ");
             //Information<Float> signalNRZ = emetteurNRZ.getInformationEmise();
             //System.out.println("Signal NRZ: " + signalNRZ);
             emetteurNRZ.connecter(new SondeAnalogique("Sonde NRZ"));
@@ -223,7 +227,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             //emetteurNRZ.emettre();
 
             // Test NRZT conversion
-            Emetteur emetteurNRZT = new Emetteur(1.0f, 0.0f, 30, "NRZT");
+            Emetteur emetteurNRZT = new Emetteur(0.0f, 1.0f, 30, "NRZT");
             //Information<Float> signalNRZT = emetteurNRZT.getInformationEmise();
             //System.out.println("Signal NRZT: " + signalNRZT);
             emetteurNRZT.connecter(new SondeAnalogique("Sonde NRZT"));
@@ -231,11 +235,12 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
             //emetteurNRZT.emettre();
 
             // Test RZ conversion
-            Emetteur emetteurRZ = new Emetteur(1.0f, 0.0f, 30, "RZ");
+            Emetteur emetteurRZ = new Emetteur(0.0f, 1.0f, 30, "RZ");
             //Information<Float> signalRZ = emetteurRZ.getInformationEmise();
             //System.out.println("Signal RZ: " + signalRZ);
             emetteurRZ.connecter(new SondeAnalogique("Sonde RZ"));
             emetteurRZ.recevoir(infoLogique);
+            //System.out.println("Signal RZ: " + emetteurRZ.getInformationEmise());
             //emetteurRZ.emettre();
 
         } catch (InformationNonConformeException e) {
