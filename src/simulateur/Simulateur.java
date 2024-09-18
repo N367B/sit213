@@ -83,6 +83,7 @@ public class Simulateur {
     public Simulateur(String[] args) throws ArgumentsException {
         // analyser et récupérer les arguments   	
         analyseArguments(args);
+        // Générer la source
         if (messageAleatoire) {
             if (aleatoireAvecGerme) {
                 source = new SourceAleatoire(nbBitsMess, seed);
@@ -93,6 +94,7 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
+        // Type de transmission
 		if (typeModulation == null) {
 			simulateurLogiqueParfait();
 		} else{
