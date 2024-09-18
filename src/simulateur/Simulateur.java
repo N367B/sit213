@@ -43,6 +43,9 @@ public class Simulateur {
     /** le composant Transmetteur parfait analogique de la chaine de transmission */
     private TransmetteurAnalogiqueParfait transmetteurAnalogique = null;
     
+    /** le composant Transmetteur parfait analogique bruité de la chaine de transmission */
+    private TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = null;
+    
     /** L'emetteur de la chaine de transmission */
     private Emetteur emetteur = null;
     /** Le recepteur de la chaine de transmission */
@@ -62,6 +65,9 @@ public class Simulateur {
     
     /** le nombre d'échantillons par bit */
     private int nbEchantillonsParBit = 30;
+    
+    /** Le SNR par bit en dB */
+    private double snrParBit = 0;
 
     /** Le constructeur de Simulateur construit une chaîne de
      * transmission composée d'une Source &lt;Boolean&gt;, d'une Destination
@@ -89,8 +95,12 @@ public class Simulateur {
         
 		if (typeModulation == null) {
 			simulateurLogiqueParfait();
-		} else {
-			simulateurAnalogiqueParfait();
+		} else{
+			if (snrParBit == 0) {
+				simulateurAnalogiqueParfait();
+			} else {
+				simulateurAnalogiqueBruite();
+			}
 		}
 
     }
@@ -124,8 +134,29 @@ public class Simulateur {
             transmetteurAnalogique.connecter(new SondeAnalogique("Transmetteur"));
             recepteur.connecter(new SondeLogique("Recepteur", 200));
 		}
-		
 	}
+	
+	private void simulateurAnalogiqueBruite() {
+	    // Calculate the SNR from Eb/N0
+	    //double snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+		double snr = snrParBit;
+	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+	    source.connecter(emetteur);
+	    transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
+	    emetteur.connecter(transmetteurAnalogiqueBruite);
+	    recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+	    transmetteurAnalogiqueBruite.connecter(recepteur);
+	    destination = new DestinationFinale();
+	    recepteur.connecter(destination);
+	    
+	    if (affichage) {
+	        source.connecter(new SondeLogique("Source", 200));
+	        emetteur.connecter(new SondeAnalogique("Émetteur"));
+	        transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur"));
+	        recepteur.connecter(new SondeLogique("Récepteur", 200));
+	    }
+	}
+
 	
     /** La méthode analyseArguments extrait d'un tableau de chaînes de
      * caractères les différentes options de la simulation.  <br>Elle met
@@ -145,63 +176,70 @@ public class Simulateur {
      * @throws ArgumentsException si un des arguments est incorrect.
      *
      */   
-    private void analyseArguments(String[] args) throws ArgumentsException {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].matches("-s")) {
-                affichage = true;
-            } else if (args[i].matches("-seed")) {
-                aleatoireAvecGerme = true;
-                i++; 
-                try { 
-                    seed = Integer.valueOf(args[i]);
-                } catch (Exception e) {
-                    throw new ArgumentsException("Valeur du parametre -seed  invalide :" + args[i]);
-                }
-            } else if (args[i].matches("-mess")) {
-                i++; 
-                messageString = args[i];
-                if (args[i].matches("[0,1]{7,}")) { 
-                    messageAleatoire = false;
-                    nbBitsMess = args[i].length();
-                } else if (args[i].matches("[0-9]{1,6}")) { 
-                    messageAleatoire = true;
-                    nbBitsMess = Integer.valueOf(args[i]);
-                    if (nbBitsMess < 1) {
-                        throw new ArgumentsException("Valeur du parametre -mess invalide : " + nbBitsMess);
-                    }
-                } else {
-                    throw new ArgumentsException("Valeur du parametre -mess invalide : " + args[i]);
-                }
-            } else if (args[i].matches("-form")) {
-                i++;
-                typeModulation = args[i]; // NRZ, NRZT, or RZ
-                if (!typeModulation.matches("NRZ|NRZT|RZ")) {
-                    throw new ArgumentsException("Valeur du parametre -form invalide : " + typeModulation);
-                }
-            } else if (args[i].matches("-nbEch")) {
-                i++;
-                try {
-                    nbEchantillonsParBit = Integer.valueOf(args[i]);
-                } catch (Exception e) {
-                    throw new ArgumentsException("Valeur du parametre -nbEch invalide : " + args[i]);
-                }
-            } else if (args[i].matches("-ampl")) {
-                i++;
-                try {
-                    Amin = Float.valueOf(args[i]);
-                    i++;
-                    Amax = Float.valueOf(args[i]);
-                } catch (Exception e) {
-                    throw new ArgumentsException("Valeur du parametre -ampl invalide : " + args[i]);
-                }
-                if (Amin >= Amax) {
-                    throw new ArgumentsException("Valeur du parametre -ampl invalide : Amin doit être inférieur à Amax");
-                }
-            } else {
-                throw new ArgumentsException("Option invalide : " + args[i]);
-            }
-        }
-    }
+	private void analyseArguments(String[] args) throws ArgumentsException {
+	    for (int i = 0; i < args.length; i++) {
+	        if (args[i].matches("-s")) {
+	            affichage = true;
+	        } else if (args[i].matches("-seed")) {
+	            aleatoireAvecGerme = true;
+	            i++; 
+	            try { 
+	                seed = Integer.valueOf(args[i]);
+	            } catch (Exception e) {
+	                throw new ArgumentsException("Valeur du paramètre -seed invalide : " + args[i]);
+	            }
+	        } else if (args[i].matches("-mess")) {
+	            i++; 
+	            messageString = args[i];
+	            if (args[i].matches("[0,1]{7,}")) { 
+	                messageAleatoire = false;
+	                nbBitsMess = args[i].length();
+	            } else if (args[i].matches("[0-9]{1,6}")) { 
+	                messageAleatoire = true;
+	                nbBitsMess = Integer.valueOf(args[i]);
+	                if (nbBitsMess < 1) {
+	                    throw new ArgumentsException("Valeur du paramètre -mess invalide : " + nbBitsMess);
+	                }
+	            } else {
+	                throw new ArgumentsException("Valeur du paramètre -mess invalide : " + args[i]);
+	            }
+	        } else if (args[i].matches("-form")) {
+	            i++;
+	            typeModulation = args[i]; // NRZ, NRZT, or RZ
+	            if (!typeModulation.matches("NRZ|NRZT|RZ")) {
+	                throw new ArgumentsException("Valeur du paramètre -form invalide : " + typeModulation);
+	            }
+	        } else if (args[i].matches("-nbEch")) {
+	            i++;
+	            try {
+	                nbEchantillonsParBit = Integer.valueOf(args[i]);
+	            } catch (Exception e) {
+	                throw new ArgumentsException("Valeur du paramètre -nbEch invalide : " + args[i]);
+	            }
+	        } else if (args[i].matches("-ampl")) {
+	            i++;
+	            try {
+	                Amin = Float.valueOf(args[i]);
+	                i++;
+	                Amax = Float.valueOf(args[i]);
+	            } catch (Exception e) {
+	                throw new ArgumentsException("Valeur du paramètre -ampl invalide : " + args[i]);
+	            }
+	            if (Amin >= Amax) {
+	                throw new ArgumentsException("Valeur du paramètre -ampl invalide : Amin doit être inférieur à Amax");
+	            }
+	        } else if (args[i].matches("-snrpb")) {
+	            i++;
+	            try {
+	                snrParBit = Double.valueOf(args[i]);
+	            } catch (Exception e) {
+	                throw new ArgumentsException("Valeur du paramètre -snrpb invalide : " + args[i]);
+	            }
+	        } else {
+	            throw new ArgumentsException("Option invalide : " + args[i]);
+	        }
+	    }
+	}
     
     /** La méthode execute effectue un envoi de message par la source
      * de la chaîne de transmission du Simulateur.

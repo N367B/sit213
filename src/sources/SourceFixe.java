@@ -30,9 +30,9 @@ public class SourceFixe extends Source<Boolean> {
 
     }
     /**
-     * Retourne la liste de booléens générée par la source aléatoire.
+     * Retourne la liste de booléens générée par la source.
      *
-     * @return La liste de booléens générée par la source aléatoire.
+     * @return La liste de booléens générée par la source.
      */
     public Information<Boolean> getInformationGeneree() {
         return this.informationGeneree;
