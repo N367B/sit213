@@ -22,7 +22,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     private Random random; // Random generator for Gaussian noise
     private int nbEchantillonsParBit; // Number of samples per bit
     private List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
-    private boolean genererFichierBruit = true; // Variable pour contrôler la génération du fichier bruit
+    private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
     
     /**
      * Constructeur de la classe TransmetteurAnalogiqueBruité.
@@ -61,6 +61,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         double rapportEbN0 = rapportSNR + 10 * Math.log10(nbEchantillonsParBit / 2.0); // Eb/N0 en dB
         
         // Affichage des informations calculées après ajout du bruit
+        /*
         System.out.println("- Nombre de bits de la séquence : " + (information.nbElements() / nbEchantillonsParBit));
         System.out.println("- Nombre d'échantillons par bit : " + nbEchantillonsParBit);
         System.out.println("1-> Puissance MOYENNE de la séquence de bits : " + puissanceSignal);
@@ -68,11 +69,11 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         System.out.println("3-> Puissance moyenne du bruit : " + puissanceBruit);
         System.out.println("4-> Rapport signal-sur-bruit (S/N, en dB) : " + rapportSNR);
         System.out.println("5-> Rapport Eb/N0 (en dB) : " + rapportEbN0);
-        
+        */
         // Si la variable genererFichierBruit est vraie, générer le fichier bruit.txt
         if (genererFichierBruit) {
             try {
-                ajouterBruitsDansFichier("bruit.txt");
+                ajouterBruitsDansFichier("resultats/bruit.txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,31 +185,27 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             double snr = 10.0; // SNR en dB
 
             // Créer une source fixe
-            SourceAleatoire source = new SourceAleatoire(300, 1);
+            SourceAleatoire source = new SourceAleatoire(100, 1);
             Information<Boolean> infoLogique = source.getInformationGeneree();
             System.out.println("Message logique émis : " + infoLogique);
-
             // Émettre un signal analogique sans bruit
             Emetteur emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             emetteur.connecter(new SondeAnalogique("Signal Analogique émis sans bruit"));
             emetteur.recevoir(infoLogique);
             Information<Float> infoAnalogiqueSansBruit = emetteur.getInformationEmise();
             System.out.println("Signal analogique sans bruit : " + infoAnalogiqueSansBruit);
-
             // Transmettre le signal à travers un canal avec bruit
             TransmetteurAnalogiqueBruite transmetteur = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
             transmetteur.connecter(new SondeAnalogique("Signal Analogique reçu avec bruit"));
             transmetteur.recevoir(infoAnalogiqueSansBruit);
             Information<Float> infoAnalogiqueAvecBruit = transmetteur.getInformationEmise();
             System.out.println("Signal analogique avec bruit : " + infoAnalogiqueAvecBruit);
-
             // Créer le récepteur et recevoir le signal bruité
             Recepteur recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, typeModulation);
             recepteur.connecter(new SondeLogique("Message logique reçu après bruit", 200));
             recepteur.recevoir(infoAnalogiqueAvecBruit);
             Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
             System.out.println("Message logique reçu : " + infoLogiqueRecue);
-
         } catch (InformationNonConformeException e) {
             System.err.println("Erreur : " + e.getMessage());
         }

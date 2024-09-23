@@ -142,6 +142,7 @@ public class Simulateur {
 	    // Calculate the SNR from Eb/N0
 	    //double snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
 		double snr = snrParBit;
+	    //System.out.println("SNR utilisé dans la simulation : " + snr);
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
 	    source.connecter(emetteur);
 	    transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
@@ -314,7 +315,13 @@ public class Simulateur {
     public Destination<Boolean> getDestination() {
         return destination;
     }
-   
+   /**
+    * Setter pour snrParBit
+    */
+	public void setSnrParBit(double snrParBit) {
+		this.snrParBit = snrParBit;
+	}
+    
     /** La fonction main instancie un Simulateur à l'aide des arguments paramètres 
      * et affiche le résultat de l'exécution d'une transmission.
      * @param args les différents arguments qui serviront à l'instanciation du Simulateur.
