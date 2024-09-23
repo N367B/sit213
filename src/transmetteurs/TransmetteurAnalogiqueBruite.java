@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.io.File;
 
 /**
  * Classe TransmetteurAnalogiqueBruité, hérite de la classe Transmetteur et ajoute
@@ -22,7 +23,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     private Random random; // Random generator for Gaussian noise
     private int nbEchantillonsParBit; // Number of samples per bit
     private List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
-    private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
+    private static final boolean genererFichierBruit = true; // Variable pour contrôler la génération du fichier bruit
     
     /**
      * Constructeur de la classe TransmetteurAnalogiqueBruité.
@@ -160,8 +161,8 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         Collections.sort(bruitsGeneres);
         // Afficher les valeurs triées du bruit
         //System.out.println("Valeurs triées du bruit : " + bruitsGeneres);
-        // Ouvrir le fichier en mode ajout (append), le créer s'il n'existe pas
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomFichier, true))) {
+        // Ouvrir le fichier, le créer s'il n'existe pas
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomFichier, false))) {
             // Écrire chaque valeur de bruit triée dans une nouvelle ligne
             for (Float bruit : bruitsGeneres) {
                 writer.write(bruit.toString());
