@@ -18,6 +18,7 @@ LE COQ Justine
 - `lib/` : bibliothèques du projet
 - `tests/` : tests du projet
 - `rapports/` : rapports du projet par étape
+- `resultats/` : résultats des tests de simulations
 - cleanAll : script de nettoyage
 - genDeliverable : script de génsudération de l'archive
 - genDoc : script de génération de la documentation
