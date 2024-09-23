@@ -5,6 +5,12 @@ import information.*;
 import sources.*;
 import visualisations.*;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Classe TransmetteurAnalogiqueBruité, hérite de la classe Transmetteur et ajoute
@@ -15,7 +21,9 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     private double snr; // Signal-to-Noise Ratio (in dB)
     private Random random; // Random generator for Gaussian noise
     private int nbEchantillonsParBit; // Number of samples per bit
-
+    private List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
+    private boolean genererFichierBruit = true; // Variable pour contrôler la génération du fichier bruit
+    
     /**
      * Constructeur de la classe TransmetteurAnalogiqueBruité.
      * @param snr Le rapport signal/bruit (en dB).
@@ -26,6 +34,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         this.snr = snr;
         this.nbEchantillonsParBit = nbEchant;
         this.random = new Random();
+        this.bruitsGeneres = new ArrayList<>(); // Initialiser la liste des bruits générés
     }
 
     /**
@@ -59,7 +68,15 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         System.out.println("3-> Puissance moyenne du bruit : " + puissanceBruit);
         System.out.println("4-> Rapport signal-sur-bruit (S/N, en dB) : " + rapportSNR);
         System.out.println("5-> Rapport Eb/N0 (en dB) : " + rapportEbN0);
-
+        
+        // Si la variable genererFichierBruit est vraie, générer le fichier bruit.txt
+        if (genererFichierBruit) {
+            try {
+                ajouterBruitsDansFichier("bruit.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.emettre();
     }
 
@@ -95,7 +112,11 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             // Ajouter le bruit à l'échantillon original
             float valeurBruitée = valeurOriginale + bruit;
             informationBruitee.add(valeurBruitée);
+
+            // Enregistrer le bruit généré
+            bruitsGeneres.add(bruit);
         }
+    
         return informationBruitee;
     }
 
@@ -129,6 +150,27 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     }
 
     /**
+     * Ajoute les valeurs de bruit triées dans un fichier texte.
+     * @param nomFichier Le nom du fichier texte dans lequel écrire les données.
+     * @throws IOException Si une erreur survient lors de l'écriture du fichier.
+     */
+    private void ajouterBruitsDansFichier(String nomFichier) throws IOException {
+        // Trier la liste des bruits générés
+        Collections.sort(bruitsGeneres);
+        // Afficher les valeurs triées du bruit
+        //System.out.println("Valeurs triées du bruit : " + bruitsGeneres);
+        // Ouvrir le fichier en mode ajout (append), le créer s'il n'existe pas
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomFichier, true))) {
+            // Écrire chaque valeur de bruit triée dans une nouvelle ligne
+            for (Float bruit : bruitsGeneres) {
+                writer.write(bruit.toString());
+                writer.newLine();
+            }
+        }
+        System.out.println("Les valeurs triées du bruit ont été ajoutées au fichier " + nomFichier);
+    }
+    
+    /**
      * Méthode principale pour tester le transmetteur analogique bruité.
      * @param args Les arguments de la ligne de commande.
      */
@@ -142,7 +184,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             double snr = 10.0; // SNR en dB
 
             // Créer une source fixe
-            SourceAleatoire source = new SourceAleatoire(100, 1);
+            SourceAleatoire source = new SourceAleatoire(300, 1);
             Information<Boolean> infoLogique = source.getInformationGeneree();
             System.out.println("Message logique émis : " + infoLogique);
 
