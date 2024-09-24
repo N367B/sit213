@@ -177,7 +177,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
             recepteur.recevoir(infoAnalogique);
 
             // Afficher le message logique reçu
-            Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
+            //Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
             //System.out.println("Message logique reçu : " + infoLogiqueRecue);
 
         } catch (InformationNonConformeException e) {

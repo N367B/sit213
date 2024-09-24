@@ -18,7 +18,8 @@ import simulateur.*;
     SimulateurTest.class,
     EmetteurTest.class,
     TransmetteurAnalogiqueParfaitTest.class,
-    RecepteurTest.class
+    RecepteurTest.class,
+    TransmetteurAnalogiqueBruiteTest.class
 })
 public class AllTests {
 }
