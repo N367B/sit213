@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 
+/**
+ * Classe pour simuler la chaîne de transmission et générer la courbe de TEB en
+ * fonction du SNR.
+ */
 public class SimulateurTEB {
 
     private String typeModulation;
     private int nbSimulations; // Number of simulations per SNR
-
+    private static final Boolean affichage = false;
     /**
      * Constructeur de la classe SimulateurTEB.
      * Il prend en paramètre le type de modulation et le nombre de simulations.
@@ -52,9 +56,10 @@ public class SimulateurTEB {
                         "-ampl", "-1.0", "1.0", // Amplitude
                         "-snrpb", String.valueOf(snr) // SNR par bit
                     });
-
-                    System.out.println("Simulation " + (simulation + 1) + " pour modulation " + typeModulation + " avec SNR = " + snr + " dB");
-
+                    
+                    if (affichage) {
+                    	System.out.println("Simulation " + (simulation + 1) + " pour modulation " + typeModulation + " avec SNR = " + snr + " dB");
+                    }
                     // Exécuter la simulation
                     simulateur.execute();
 
@@ -67,15 +72,17 @@ public class SimulateurTEB {
                 float tebMoyenne = sommeTEB / nbSimulations;
                 tebValues.add(tebMoyenne);
                 snrValues.add(snr);
-
-                // Impression dans le terminal
-                System.out.println("Modulation: " + typeModulation + ", SNR: " + snr + " dB, TEB Moyenne: " + tebMoyenne);
+                
+                if (affichage) {
+                    System.out.println("Modulation: " + typeModulation + ", SNR: " + snr + " dB, TEB Moyenne: " + tebMoyenne);
+                    }
 
                 // Écriture dans le fichier CSV
                 writer.write(typeModulation + "," + snr + "," + tebMoyenne + "\n");
             }
-
-            System.out.println("Les résultats ont été enregistrés dans : " + fichierCSV);
+			if (affichage) {
+	            System.out.println("Les résultats ont été enregistrés dans : " + fichierCSV);
+			}
         }
     }
 

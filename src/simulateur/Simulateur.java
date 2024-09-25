@@ -317,6 +317,7 @@ public class Simulateur {
     }
    /**
     * Setter pour snrParBit
+    * @param snrParBit le SNR par bit en dB
     */
 	public void setSnrParBit(double snrParBit) {
 		this.snrParBit = snrParBit;

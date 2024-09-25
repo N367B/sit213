@@ -21,6 +21,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     private double snr; // Signal-to-Noise Ratio (in dB)
     private Random random; // Random generator for Gaussian noise
     private int nbEchantillonsParBit; // Number of samples per bit
+    /** Liste pour stocker les valeurs du bruit */
     public List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
     private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
     private static final boolean afficherInformations = false; // Variable pour contrôler l'affichage des informations
