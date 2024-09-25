@@ -69,3 +69,9 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 - [X] Recepteur (analogue(float) -> booléen)
 - [X] Simulateur (Main du projet)
 - [X] Simulateur TEB, test de l'erreur binaire en fonction du SNR et de la forme de signal
+
+## TODO
+
+ - Amélioration des tests
+ - Respecter les consignes pour la prise en charges des argu;ents et valeurs par défaut
+ - Relecture complete du code pour harmonisation
