@@ -18,9 +18,9 @@ import java.util.Collections;
  */
 public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
 
-    private double snr; // Signal-to-Noise Ratio (in dB)
-    private Random random; // Random generator for Gaussian noise
-    private int nbEchantillonsParBit; // Number of samples per bit
+    private double snr; // Rapport signal/bruit (en dB)
+    private Random random; // Générateur de nombres aléatoires
+    private int nbEchantillonsParBit; // Nombre d'échantillons par bit
     /** Liste pour stocker les valeurs du bruit */
     public List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
     private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
