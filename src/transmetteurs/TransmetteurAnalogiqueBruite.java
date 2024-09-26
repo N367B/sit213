@@ -24,7 +24,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     /** Liste pour stocker les valeurs du bruit */
     public List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
     private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
-    private static final boolean afficherInformations = false; // Variable pour contrôler l'affichage des informations
+    private static final boolean afficherInformations = true; // Variable pour contrôler l'affichage des informations
     /**
      * Constructeur de la classe TransmetteurAnalogiqueBruité.
      * @param snr Le rapport signal/bruit (en dB).

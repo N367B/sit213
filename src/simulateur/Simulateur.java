@@ -140,8 +140,8 @@ public class Simulateur {
 	
 	private void simulateurAnalogiqueBruite() {
 	    // Calculate the SNR from Eb/N0
-	    //double snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
-		double snr = snrParBit;
+	    double snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+		//double snr = snrParBit;
 	    //System.out.println("SNR utilisé dans la simulation : " + snr);
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
 	    source.connecter(emetteur);
