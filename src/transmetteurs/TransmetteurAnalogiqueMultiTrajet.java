@@ -88,6 +88,10 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
         }
     }
     
+   /**
+    * Méthode principale pour tester le transmetteur analogique à trajets multiples.
+    * @param args Les arguments de la ligne de commande.
+    */
     public static void main(String[] args) {
         try {
             // Définir les paramètres pour la simulation
