@@ -74,4 +74,6 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 
  - Amélioration des tests
  - Respecter les consignes pour la prise en charges des arguments et valeurs par défaut
+ - Courbes TEB en fonction du SNR ou Eb/N0 log
+ - SNR vs Eb/N0
  - Relecture complete du code pour harmonisation
