@@ -3,6 +3,7 @@ package simulateur;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
+import java.util.concurrent.*;
 
 /**
  * Classe pour simuler la chaîne de transmission et générer la courbe de TEB en
@@ -13,6 +14,7 @@ public class SimulateurTEB {
     private String typeModulation;
     private int nbSimulations; // Number of simulations per SNR
     private static final Boolean affichage = true;
+    
     /**
      * Constructeur de la classe SimulateurTEB.
      * Il prend en paramètre le type de modulation et le nombre de simulations.
@@ -36,57 +38,73 @@ public class SimulateurTEB {
     public void genererCourbeTEB(double snrMin, double snrMax, double pasSNR, String fichierCSV) throws Exception {
         List<Float> tebValues = new ArrayList<>();
         List<Double> snrValues = new ArrayList<>();
-
+        
+        // Thread pool with a fixed number of threads based on available processors
+        int availableThreads = Runtime.getRuntime().availableProcessors();
+        ExecutorService executorService = Executors.newFixedThreadPool(availableThreads);
+        
         // Ouverture du fichier CSV pour écrire les résultats
         try (FileWriter writer = new FileWriter(fichierCSV)) {
             writer.write("Modulation,SNR(dB),TEB\n"); // En-tête du fichier CSV
-            int i = 0;
-            int nbSimulationsTotal = nbSimulations*(((int) ((snrMax - snrMin) / pasSNR)) + 1);
+            int nbSimulationsTotal = nbSimulations * (((int) ((snrMax - snrMin) / pasSNR)) + 1);
+            
             // Boucle sur les valeurs de SNR
-            for (double snr = snrMax; snr >= snrMin; snr -= pasSNR) {
-                float sommeTEB = 0;
+            List<Future<SimulationResult>> futures = new ArrayList<>();
+            for (double snr = snrMin; snr <= snrMax; snr += pasSNR) {
                 
-                // Effectuer plusieurs simulations pour chaque SNR
+                // Pour chaque SNR, on soumet les simulations au thread pool
                 for (int simulation = 0; simulation < nbSimulations; simulation++) {
-                	i++;
-                	// Affichage du numéro de la simulation sur le nombre total de simulations
-                	System.out.println("[" + (i) + "/" + (nbSimulationsTotal) + "]\r");
-                    // Créer un nouveau simulateur pour chaque SNR
-                    Simulateur simulateur = new Simulateur(new String[] {
-                        "-mess", "1000", // Taille du message
-                        "-form", typeModulation, // Type de modulation
-                        "-seed", String.valueOf(simulation + 1), // Germe différent pour chaque simulation
-                        "-nbEch", "30", // Nombre d'échantillons par bit
-                        "-ampl", "-1.0", "1.0", // Amplitude
-                        "-snrpb", String.valueOf(snr) // SNR par bit
+                    final int simIndex = simulation;
+                    final double currentSnr = snr;
+                    
+                    // Soumettre la simulation à l'executorService
+                    Future<SimulationResult> future = executorService.submit(() -> {
+                        Simulateur simulateur = new Simulateur(new String[] {
+                            "-mess", "10000", // Taille du message
+                            "-form", typeModulation, // Type de modulation
+                            "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
+                            "-nbEch", "30", // Nombre d'échantillons par bit
+                            "-ampl", "-1.0", "1.0", // Amplitude
+                            "-snrpb", String.valueOf(currentSnr) // SNR par bit
+                        });
+                        
+                        if (affichage) {
+                            System.out.println("Simulation " + (simIndex + 1) + " pour modulation " + typeModulation + " avec SNR = " + currentSnr + " dB");
+                        }
+                        
+                        // Exécuter la simulation
+                        simulateur.execute();
+                        
+                        // Calculer le TEB pour cette simulation
+                        float teb = simulateur.calculTauxErreurBinaire();
+                        return new SimulationResult(currentSnr, teb, simIndex);
                     });
                     
-                    if (affichage) {
-                    	System.out.println("Simulation " + (simulation + 1) + " pour modulation " + typeModulation + " avec SNR = " + snr + " dB");
-                    }
-                    // Exécuter la simulation
-                    simulateur.execute();
-
-                    // Calculer le TEB pour cette simulation
-                    float teb = simulateur.calculTauxErreurBinaire();
-                    sommeTEB += teb;
+                    futures.add(future);
                 }
-
-                // Calculer le TEB moyen
-                float tebMoyenne = sommeTEB / nbSimulations;
-                tebValues.add(tebMoyenne);
-                snrValues.add(snr);
+            }
+            
+            // Récupérer les résultats des simulations
+            for (Future<SimulationResult> future : futures) {
+                SimulationResult result = future.get(); // Bloque jusqu'à ce que le résultat soit disponible
+                tebValues.add(result.teb);
+                snrValues.add(result.snr);
                 
                 if (affichage) {
-                    System.out.println("Modulation: " + typeModulation + ", SNR: " + snr + " dB, TEB Moyenne: " + tebMoyenne);
-                    }
-
+                    System.out.println("Modulation: " + typeModulation + ", SNR: " + result.snr + " dB, TEB Moyenne: " + result.teb);
+                }
+                
                 // Écriture dans le fichier CSV
-                writer.write(typeModulation + "," + snr + "," + tebMoyenne + "\n");
+                writer.write(typeModulation + "," + result.snr + "," + result.teb + "\n");
             }
-			if (affichage) {
-	            System.out.println("Les résultats ont été enregistrés dans : " + fichierCSV);
-			}
+            
+            if (affichage) {
+                System.out.println("Les résultats ont été enregistrés dans : " + fichierCSV);
+            }
+        } finally {
+            // Shut down the executor service gracefully
+            executorService.shutdown();
+            executorService.awaitTermination(1, TimeUnit.HOURS); // Adjust time as necessary
         }
     }
 
@@ -99,11 +117,11 @@ public class SimulateurTEB {
             System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ");
 
             // Valeurs de SNR à tester
-            double snrMin = -10.0;
-            double snrMax = 0.0;
-            double pasSNR = 0.1;
+            double snrMin = -1.0;
+            double snrMax = 2.0;
+            double pasSNR = 0.2;
 
-            int nbSimulations = 10; // Nombre de simulations pour chaque SNR
+            int nbSimulations = 1; // Nombre de simulations pour chaque SNR
 
             // Créez les objets SimulateurTEB pour chaque modulation
             SimulateurTEB simTEBNRZ = new SimulateurTEB("NRZ", nbSimulations);
@@ -119,6 +137,19 @@ public class SimulateurTEB {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    // Classe pour encapsuler le résultat d'une simulation
+    private static class SimulationResult {
+        double snr;
+        float teb;
+        int simulationIndex;
+
+        public SimulationResult(double snr, float teb, int simulationIndex) {
+            this.snr = snr;
+            this.teb = teb;
+            this.simulationIndex = simulationIndex;
         }
     }
 }
