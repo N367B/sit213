@@ -7,11 +7,11 @@ data = pd.read_csv(file_path, header=None, names=['Values'], dtype=float)  # Cha
 
 # Créer l'histogramme
 plt.figure(figsize=(8, 6))
-plt.hist(data['Values'], bins=2500, color='orange', edgecolor='black')
+plt.hist(data['Values'], bins=100, color='orange', edgecolor='black')
 plt.title('Histogramme des valeurs continues')
 plt.xlabel('Valeurs du bruit')
 plt.ylabel('Fréquence d\'apparition')
-plt.xlim(-3, 3)
+plt.xlim(-1, 1)
 # Enregistrer l'histogramme en tant qu'image
 plt.savefig('histogramme.png', dpi=300)
 
