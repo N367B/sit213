@@ -24,7 +24,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
     /** Liste pour stocker les valeurs du bruit */
     public List<Float> bruitsGeneres; // Liste pour stocker les valeurs du bruit
     private static final boolean genererFichierBruit = false; // Variable pour contrôler la génération du fichier bruit
-    private static final boolean afficherInformations = true; // Variable pour contrôler l'affichage des informations
+    private static final boolean afficherInformations = false; // Variable pour contrôler l'affichage des informations
     /**
      * Constructeur de la classe TransmetteurAnalogiqueBruité.
      * @param snr Le rapport signal/bruit (en dB).
@@ -189,7 +189,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             SourceAleatoire source = new SourceAleatoire(100, 1);
             //SourceFixe source = new SourceFixe("000000000000000000000");
             Information<Boolean> infoLogique = source.getInformationGeneree();
-            System.out.println("Message logique émis");
+            //System.out.println("Message logique émis");
             //System.out.println("Message logique émis : " + infoLogique);
             // Émettre un signal analogique sans bruit
             Emetteur emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
@@ -197,19 +197,19 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             emetteur.recevoir(infoLogique);
             Information<Float> infoAnalogiqueSansBruit = emetteur.getInformationEmise();
             //System.out.println("Signal analogique sans bruit : " + infoAnalogiqueSansBruit);
-            System.out.println("Signal analogique émis");
+            //System.out.println("Signal analogique émis");
             // Transmettre le signal à travers un canal avec bruit
             TransmetteurAnalogiqueBruite transmetteur = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
             //transmetteur.connecter(new SondeAnalogique("Signal Analogique reçu avec bruit"));
             transmetteur.recevoir(infoAnalogiqueSansBruit);
             Information<Float> infoAnalogiqueAvecBruit = transmetteur.getInformationEmise();
-            System.out.println("Signal analogique reçu avec bruit");
+            //System.out.println("Signal analogique reçu avec bruit");
             //System.out.println("Signal analogique avec bruit : " + infoAnalogiqueAvecBruit);
             // Créer le récepteur et recevoir le signal bruité
             Recepteur recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, typeModulation);
             //recepteur.connecter(new SondeLogique("Message logique reçu après bruit", 200));
             recepteur.recevoir(infoAnalogiqueAvecBruit);
-            System.out.println("Message logique reçu après bruit");
+            //System.out.println("Message logique reçu après bruit");
             //Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
             //System.out.println("Message logique reçu : " + infoLogiqueRecue);
         } catch (InformationNonConformeException e) {
