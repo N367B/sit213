@@ -14,16 +14,29 @@ import java.util.ArrayList;
  */
 public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float> {
 
-    private List<int[]> trajetsIndirects; // Liste des couples {dt, ar} pour les trajets indirects
+    private List<float[]> trajetsIndirects; // Liste des couples {dt, ar} pour les trajets indirects
 
     /**
      * Constructeur prenant en compte plusieurs trajets indirects.
+     * Vérifie que les délais et les atténuations respectent les contraintes (dt >= 0, 0 <= ar <= 1).
      * @param trajetsIndirects Liste des couples {dt, ar} où dt est le décalage temporel (en échantillons)
      *                         et ar est le coefficient d'atténuation.
+     * @throws IllegalArgumentException si les paramètres sont incorrects.
      */
-    public TransmetteurAnalogiqueMultiTrajet(List<int[]> trajetsIndirects) {
+    public TransmetteurAnalogiqueMultiTrajet(List<float[]> trajetsIndirects) {
         super();
-        this.trajetsIndirects = trajetsIndirects;
+        this.trajetsIndirects = new ArrayList<>();
+
+        // Vérification des paramètres
+        for (float[] trajet : trajetsIndirects) {
+            if (trajet[0] < 0) {
+                throw new IllegalArgumentException("Le décalage temporel (dt) doit être un entier positif ou nul.");
+            }
+            if (trajet[1] < 0.0f || trajet[1] > 1.0f) { // Atténuation entre 0 et 1
+                throw new IllegalArgumentException("Le coefficient d'atténuation (ar) doit être compris entre 0.0 et 1.0.");
+            }
+            this.trajetsIndirects.add(trajet);
+        }
     }
 
     /**
@@ -38,9 +51,9 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
             float echantillonFinal = signalAnalogique.iemeElement(i);
 
             // Appliquer chaque trajet indirect (retard et atténuation)
-            for (int[] trajet : trajetsIndirects) {
-                int dt = trajet[0];
-                float ar = trajet[1] / 10.0f; // Normalisation pour obtenir l'atténuation correcte
+            for (float[] trajet : trajetsIndirects) {
+                int dt = (int) trajet[0];  // Retard en nombre d'échantillons
+                float ar = trajet[1];  // Atténuation exacte
                 if (i >= dt) {
                     echantillonFinal += ar * signalAnalogique.iemeElement(i - dt);
                 }
@@ -91,16 +104,16 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
     public static void main(String[] args) {
         try {
             // Définir les paramètres pour la simulation
-            String typeModulation = "RZ";
+            String typeModulation = "NRZT";
             float Amax = 1.0f;
             float Amin = 0.0f;
             int nbEchantillonsParBit = 30;
             int messageSize = 20; // Taille du message
 
             // Paramètres des trajets indirects : {dt (retard), ar (atténuation)}
-            List<int[]> trajetsIndirects = new ArrayList<>();
-            trajetsIndirects.add(new int[]{3, 5});  // dt=3, ar=0.5
-            trajetsIndirects.add(new int[] {5, 3});
+            List<float[]> trajetsIndirects = new ArrayList<>();
+            trajetsIndirects.add(new float[]{3, 0.5f});  // dt=3, ar=0.5
+            trajetsIndirects.add(new float[]{5, 0.05f});  // dt=5, ar=0.05 (allowing finer attenuation)
 
             // Créer une source
             SourceAleatoire source = new SourceAleatoire(messageSize, 1);

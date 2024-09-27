@@ -7,6 +7,9 @@ import sources.*;
 import transmetteurs.*;
 import visualisations.*;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /** La classe Simulateur permet de construire et simuler une chaîne de
  * transmission composée d'une Source, d'un nombre variable de
  * Transmetteur(s) et d'une Destination.
@@ -69,6 +72,10 @@ public class Simulateur {
     /** Le SNR par bit en dB */
     private double snrParBit = 0;
 
+    /** Les trajets indirects pour le transmetteur analogique à trajets multiples */
+    private List<float[]> trajetsIndirects = new ArrayList<>();
+
+
     /** Le constructeur de Simulateur construit une chaîne de
      * transmission composée d'une Source &lt;Boolean&gt;, d'une Destination
      * &lt;Boolean&gt; et de Transmetteur(s) [voir la méthode
@@ -98,9 +105,12 @@ public class Simulateur {
 		if (typeModulation == null) {
 			simulateurLogiqueParfait();
 		} else{
-			if (snrParBit == 0) {
+			if (snrParBit == 0 && trajetsIndirects.isEmpty()) {
 				simulateurAnalogiqueParfait();
-			} else {
+			} else if (!trajetsIndirects.isEmpty()) {
+                simulateurMultiTrajet();
+            }
+            else {
 				simulateurAnalogiqueBruite();
 			}
 		}
@@ -160,7 +170,32 @@ public class Simulateur {
 	    }
 	}
 
-	
+    private void simulateurMultiTrajet() {
+        emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+        source.connecter(emetteur);
+
+        TransmetteurAnalogiqueMultiTrajet transmetteurAnalogiqueMultiTrajet = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
+        emetteur.connecter(transmetteurAnalogiqueMultiTrajet);
+
+        TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snrParBit, nbEchantillonsParBit);
+
+        transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
+
+        recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+        transmetteurAnalogiqueBruite.connecter(recepteur);
+        
+        destination = new DestinationFinale();
+        recepteur.connecter(destination);
+
+        if (affichage) {
+            source.connecter(new SondeLogique("Source", 200));
+            emetteur.connecter(new SondeAnalogique("Émetteur"));
+            transmetteurAnalogiqueMultiTrajet.connecter(new SondeAnalogique("Transmetteur Multi-Trajet"));
+            transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
+            recepteur.connecter(new SondeLogique("Récepteur", 200));
+        }
+    }
+
     /** La méthode analyseArguments extrait d'un tableau de chaînes de
      * caractères les différentes options de la simulation.  <br>Elle met
      * à jour les attributs correspondants du Simulateur.
@@ -179,71 +214,88 @@ public class Simulateur {
      * @throws ArgumentsException si un des arguments est incorrect.
      *
      */   
-	private void analyseArguments(String[] args) throws ArgumentsException {
-	    for (int i = 0; i < args.length; i++) {
-	        if (args[i].matches("-s")) {
-	            affichage = true;
-	        } else if (args[i].matches("-seed")) {
-	            aleatoireAvecGerme = true;
-	            i++; 
-	            try { 
-	                seed = Integer.valueOf(args[i]);
-	            } catch (Exception e) {
-	                throw new ArgumentsException("Valeur du paramètre -seed invalide : " + args[i]);
-	            }
-	        } else if (args[i].matches("-mess")) {
-	            i++; 
-	            messageString = args[i];
-	            if (args[i].matches("[0,1]{7,}")) { 
-	                messageAleatoire = false;
-	                nbBitsMess = args[i].length();
-	            } else if (args[i].matches("[0-9]{1,6}")) { 
-	                messageAleatoire = true;
-	                nbBitsMess = Integer.valueOf(args[i]);
-	                if (nbBitsMess < 1) {
-	                    throw new ArgumentsException("Valeur du paramètre -mess invalide : " + nbBitsMess);
-	                }
-	            } else {
-	                throw new ArgumentsException("Valeur du paramètre -mess invalide : " + args[i]);
-	            }
-	        } else if (args[i].matches("-form")) {
-	            i++;
-	            typeModulation = args[i]; // NRZ, NRZT, or RZ
-	            if (!typeModulation.matches("NRZ|NRZT|RZ")) {
-	                throw new ArgumentsException("Valeur du paramètre -form invalide : " + typeModulation);
-	            }
-	        } else if (args[i].matches("-nbEch")) {
-	            i++;
-	            try {
-	                nbEchantillonsParBit = Integer.valueOf(args[i]);
-	            } catch (Exception e) {
-	                throw new ArgumentsException("Valeur du paramètre -nbEch invalide : " + args[i]);
-	            }
-	        } else if (args[i].matches("-ampl")) {
-	            i++;
-	            try {
-	                Amin = Float.valueOf(args[i]);
-	                i++;
-	                Amax = Float.valueOf(args[i]);
-	            } catch (Exception e) {
-	                throw new ArgumentsException("Valeur du paramètre -ampl invalide : " + args[i]);
-	            }
-	            if (Amin >= Amax) {
-	                throw new ArgumentsException("Valeur du paramètre -ampl invalide : Amin doit être inférieur à Amax");
-	            }
-	        } else if (args[i].matches("-snrpb")) {
-	            i++;
-	            try {
-	                snrParBit = Double.valueOf(args[i]);
-	            } catch (Exception e) {
-	                throw new ArgumentsException("Valeur du paramètre -snrpb invalide : " + args[i]);
-	            }
-	        } else {
-	            throw new ArgumentsException("Option invalide : " + args[i]);
-	        }
-	    }
-	}
-    
+    private void analyseArguments(String[] args) throws ArgumentsException {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].matches("-s")) {
+                affichage = true;
+            } else if (args[i].matches("-seed")) {
+                aleatoireAvecGerme = true;
+                i++;
+                try {
+                    seed = Integer.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du paramètre -seed invalide : " + args[i]);
+                }
+            } else if (args[i].matches("-mess")) {
+                i++;
+                messageString = args[i];
+                if (args[i].matches("[0,1]{7,}")) {
+                    messageAleatoire = false;
+                    nbBitsMess = args[i].length();
+                } else if (args[i].matches("[0-9]{1,6}")) {
+                    messageAleatoire = true;
+                    nbBitsMess = Integer.valueOf(args[i]);
+                    if (nbBitsMess < 1) {
+                        throw new ArgumentsException("Valeur du paramètre -mess invalide : " + nbBitsMess);
+                    }
+                } else {
+                    throw new ArgumentsException("Valeur du paramètre -mess invalide : " + args[i]);
+                }
+            } else if (args[i].matches("-form")) {
+                i++;
+                typeModulation = args[i]; // NRZ, NRZT, or RZ
+                if (!typeModulation.matches("NRZ|NRZT|RZ")) {
+                    throw new ArgumentsException("Valeur du paramètre -form invalide : " + typeModulation);
+                }
+            } else if (args[i].matches("-nbEch")) {
+                i++;
+                try {
+                    nbEchantillonsParBit = Integer.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du paramètre -nbEch invalide : " + args[i]);
+                }
+            } else if (args[i].matches("-ampl")) {
+                i++;
+                try {
+                    Amin = Float.valueOf(args[i]);
+                    i++;
+                    Amax = Float.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du paramètre -ampl invalide : " + args[i]);
+                }
+                if (Amin >= Amax) {
+                    throw new ArgumentsException("Valeur du paramètre -ampl invalide : Amin doit être inférieur à Amax");
+                }
+            } else if (args[i].matches("-snrpb")) {
+                i++;
+                try {
+                    snrParBit = Double.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du paramètre -snrpb invalide : " + args[i]);
+                }
+            } else if (args[i].matches("-ti")) {
+                i++;
+                // Parse multi-path parameters (pairs of dt and ar)
+                while (i < args.length && args[i].matches("[0-9]+")) {
+                    int dt = Integer.valueOf(args[i]); // Delay
+                    i++;
+                    if (i < args.length && args[i].matches("[0-9]*\\.?[0-9]+")) {
+                        float ar = Float.valueOf(args[i]); // Attenuation
+                        trajetsIndirects.add(new float[]{dt, ar});
+                    } else {
+                        throw new ArgumentsException("Valeur du paramètre -ti invalide : " + args[i]);
+                    }
+                    i++;
+                }
+                i--; // Step back to not skip next argument
+                if (trajetsIndirects.size() > 5) {
+                    throw new ArgumentsException("Vous ne pouvez spécifier que jusqu'à 5 trajets indirects.");
+                }
+            } else {
+                throw new ArgumentsException("Option invalide : " + args[i]);
+            }
+        }
+    }    
     /** La méthode execute effectue un envoi de message par la source
      * de la chaîne de transmission du Simulateur.
      * @throws Exception si un problème survient lors de l'exécution
