@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import information.*;
-import java.util.Random;
-import java.util.List;
 
 public class TransmetteurAnalogiqueBruiteTest {
 

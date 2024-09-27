@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Classe pour simuler la chaîne de transmission et générer la courbe de TEB en
- * fonction du SNR.
+ * Classe pour simuler la chaîne de transmission et générer la courbe de TEB en fonction du SNR.
  */
 public class SimulateurTEB {
 
     private String typeModulation;
     private int nbSimulations; // Number of simulations per SNR
-    private static final Boolean affichage = true;
+    private static final Boolean affichage = false;
+    private AtomicInteger completedSimulations = new AtomicInteger(0); // Atomic integer for progress tracking
     
     /**
      * Constructeur de la classe SimulateurTEB.
@@ -43,11 +44,14 @@ public class SimulateurTEB {
         int availableThreads = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newFixedThreadPool(availableThreads);
         
+        // Calculate total simulations for progress tracking
+        int totalSimulations = nbSimulations * (((int) ((snrMax - snrMin) / pasSNR)) + 1);
+        completedSimulations.set(0); // Reset the completed simulations count
+
         // Ouverture du fichier CSV pour écrire les résultats
         try (FileWriter writer = new FileWriter(fichierCSV)) {
             writer.write("Modulation,SNR(dB),TEB\n"); // En-tête du fichier CSV
-            int nbSimulationsTotal = nbSimulations * (((int) ((snrMax - snrMin) / pasSNR)) + 1);
-            
+
             // Boucle sur les valeurs de SNR
             List<Future<SimulationResult>> futures = new ArrayList<>();
             for (double snr = snrMin; snr <= snrMax; snr += pasSNR) {
@@ -60,7 +64,7 @@ public class SimulateurTEB {
                     // Soumettre la simulation à l'executorService
                     Future<SimulationResult> future = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "10000", // Taille du message
+                            "-mess", "500", // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
@@ -77,6 +81,10 @@ public class SimulateurTEB {
                         
                         // Calculer le TEB pour cette simulation
                         float teb = simulateur.calculTauxErreurBinaire();
+
+                        // Update the progress bar
+                        updateProgressBar(totalSimulations);
+
                         return new SimulationResult(currentSnr, teb, simIndex);
                     });
                     
@@ -104,7 +112,20 @@ public class SimulateurTEB {
         } finally {
             // Shut down the executor service gracefully
             executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.HOURS); // Adjust time as necessary
+            executorService.awaitTermination(1, TimeUnit.HOURS);
+        }
+    }
+
+    /**
+     * Updates the global progress bar based on completed simulations.
+     * @param totalSimulations The total number of simulations to be run.
+     */
+    private void updateProgressBar(int totalSimulations) {
+        int completed = completedSimulations.incrementAndGet();
+        int progress = (int) ((completed / (double) totalSimulations) * 100);
+        System.out.print("\rProgress: " + progress + "% (" + completed + "/" + totalSimulations + " simulations)");
+        if (completed == totalSimulations) {
+            System.out.println("\nSimulation complete!");
         }
     }
 
@@ -117,11 +138,11 @@ public class SimulateurTEB {
             System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ");
 
             // Valeurs de SNR à tester
-            double snrMin = -1.0;
-            double snrMax = 2.0;
-            double pasSNR = 0.2;
+            double snrMin = -45.0;
+            double snrMax = 10.0;
+            double pasSNR = 0.1;
 
-            int nbSimulations = 1; // Nombre de simulations pour chaque SNR
+            int nbSimulations = 10; // Nombre de simulations pour chaque SNR
 
             // Créez les objets SimulateurTEB pour chaque modulation
             SimulateurTEB simTEBNRZ = new SimulateurTEB("NRZ", nbSimulations);
