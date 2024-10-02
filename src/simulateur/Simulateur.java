@@ -202,13 +202,20 @@ public class Simulateur {
         TransmetteurAnalogiqueMultiTrajet transmetteurAnalogiqueMultiTrajet = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
         emetteur.connecter(transmetteurAnalogiqueMultiTrajet);
 
-        TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snrParBit, nbEchantillonsParBit);
-
-        transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
-
-        recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
-        transmetteurAnalogiqueBruite.connecter(recepteur);
-        
+        if (snr != 0 || snrParBit != 0) {
+            if (snr == 0){
+                snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+            }
+            System.out.println("SNR utilisé dans la simulation : " + snr);
+            TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
+            transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
+            recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+            transmetteurAnalogiqueBruite.connecter(recepteur);
+        } else {
+            System.out.println("SNR non spécifié, utilisation d'un récepteur parfait.");
+            recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+            transmetteurAnalogiqueMultiTrajet.connecter(recepteur);
+        }
         destination = new DestinationFinale();
         recepteur.connecter(destination);
 
@@ -216,7 +223,9 @@ public class Simulateur {
             source.connecter(new SondeLogique("Source", 200));
             emetteur.connecter(new SondeAnalogique("Émetteur"));
             transmetteurAnalogiqueMultiTrajet.connecter(new SondeAnalogique("Transmetteur Multi-Trajet"));
-            transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
+            if (transmetteurAnalogiqueBruite != null){
+                transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
+            }
             recepteur.connecter(new SondeLogique("Récepteur", 200));
         }
     }
