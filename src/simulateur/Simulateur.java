@@ -107,19 +107,17 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
-        System.out.println(snr);
-
         if (defautLogique) {
-            System.out.println("Simulateur logique parfait");
+            //System.out.println("Simulateur logique parfait");
             simulateurLogiqueParfait();
             } else if (snrParBit == 0 && snr == 0 && trajetsIndirects.isEmpty()) {
-                System.out.println("Simulateur analogique parfait");
+                //System.out.println("Simulateur analogique parfait");
                 simulateurAnalogiqueParfait();
             } else if (!trajetsIndirects.isEmpty()) {
-                System.out.println("Simulateur multi-trajet");
+                //System.out.println("Simulateur multi-trajet");
                 simulateurMultiTrajet();
-            } else if (snrParBit != 0) {
-                System.out.println("Simulateur analogique bruité");
+            } else if (snrParBit != 0 || snr != 0) {
+                //System.out.println("Simulateur analogique bruité");
                 simulateurAnalogiqueBruite();
             } else {
                 //System.out.println("Paramètres : ", snr, snrParBit, trajetsIndirects);
