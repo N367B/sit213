@@ -18,7 +18,10 @@ import java.util.ArrayList;
  *
  */
 public class Simulateur {
-          
+    
+    /** indique si le Simulateur utilise le simulateur logique */
+    private boolean defautLogique = true;
+
     /** indique si le Simulateur utilise des sondes d'affichage */
     private boolean affichage = false;
     
@@ -58,7 +61,7 @@ public class Simulateur {
     private Destination<Boolean> destination = null;
     
     /** le type de modulation à utiliser (NRZ, NRZT, RZ) */
-    private String typeModulation = null;
+    private String typeModulation = "RZ";
     
     /** L'amplitude du signal analogique pour représenter un bit '1'. */
     private float Amax = 1.0f;
@@ -71,6 +74,9 @@ public class Simulateur {
     
     /** Le SNR par bit en dB */
     private double snrParBit = 0;
+
+    /** Le SNR en dB */
+    private double snr = 0;
 
     /** Les trajets indirects pour le transmetteur analogique à trajets multiples */
     private List<float[]> trajetsIndirects = new ArrayList<>();
@@ -101,7 +107,24 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
-        // Type de transmission
+
+        if (defautLogique) {
+            System.out.println("Simulateur logique parfait");
+            simulateurLogiqueParfait();
+            } else if (snrParBit == 0 && trajetsIndirects.isEmpty()) {
+                System.out.println("Simulateur analogique parfait");
+                simulateurAnalogiqueParfait();
+            } else if (!trajetsIndirects.isEmpty()) {
+                System.out.println("Simulateur multi-trajet");
+                simulateurMultiTrajet();
+            } else if (snrParBit != 0) {
+                System.out.println("Simulateur analogique bruité");
+                simulateurAnalogiqueBruite();
+            } else {
+                throw new ArgumentsException("Erreur lors de la configuration des paramètres de la simulation.");
+            }
+
+        /*// Type de transmission
 		if (typeModulation == null) {
 			simulateurLogiqueParfait();
 		} else{
@@ -113,7 +136,7 @@ public class Simulateur {
             else {
 				simulateurAnalogiqueBruite();
 			}
-		}
+		}*/
 
     }
     
@@ -150,7 +173,7 @@ public class Simulateur {
 	
 	private void simulateurAnalogiqueBruite() {
 	    // Calculate the SNR from Eb/N0
-	    double snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+	    snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
 		//double snr = snrParBit;
 	    //System.out.println("SNR utilisé dans la simulation : " + snr);
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
@@ -243,12 +266,14 @@ public class Simulateur {
                 }
             } else if (args[i].matches("-form")) {
                 i++;
+                defautLogique = false;
                 typeModulation = args[i]; // NRZ, NRZT, or RZ
                 if (!typeModulation.matches("NRZ|NRZT|RZ")) {
                     throw new ArgumentsException("Valeur du paramètre -form invalide : " + typeModulation);
                 }
             } else if (args[i].matches("-nbEch")) {
                 i++;
+                defautLogique = false;
                 try {
                     nbEchantillonsParBit = Integer.valueOf(args[i]);
                 } catch (Exception e) {
@@ -256,6 +281,7 @@ public class Simulateur {
                 }
             } else if (args[i].matches("-ampl")) {
                 i++;
+                defautLogique = false;
                 try {
                     Amin = Float.valueOf(args[i]);
                     i++;
@@ -268,13 +294,23 @@ public class Simulateur {
                 }
             } else if (args[i].matches("-snrpb")) {
                 i++;
+                defautLogique = false;
                 try {
                     snrParBit = Double.valueOf(args[i]);
                 } catch (Exception e) {
                     throw new ArgumentsException("Valeur du paramètre -snrpb invalide : " + args[i]);
                 }
+            } else if (args[i].matches("-snr")){
+                i++;
+                defautLogique = false;
+                try {
+                    snr = Double.valueOf(args[i]);
+                } catch (Exception e) {
+                    throw new ArgumentsException("Valeur du paramètre -snr invalide : " + args[i]);
+            }
             } else if (args[i].matches("-ti")) {
                 i++;
+                defautLogique = false;
                 // Parse multi-path parameters (pairs of dt and ar)
                 while (i < args.length && args[i].matches("[0-9]+")) {
                     int dt = Integer.valueOf(args[i]); // Delay
