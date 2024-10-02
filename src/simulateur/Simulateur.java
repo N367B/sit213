@@ -107,11 +107,12 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
+        System.out.println(snr);
 
         if (defautLogique) {
             System.out.println("Simulateur logique parfait");
             simulateurLogiqueParfait();
-            } else if (snrParBit == 0 && trajetsIndirects.isEmpty()) {
+            } else if (snrParBit == 0 && snr == 0 && trajetsIndirects.isEmpty()) {
                 System.out.println("Simulateur analogique parfait");
                 simulateurAnalogiqueParfait();
             } else if (!trajetsIndirects.isEmpty()) {
@@ -121,6 +122,7 @@ public class Simulateur {
                 System.out.println("Simulateur analogique bruité");
                 simulateurAnalogiqueBruite();
             } else {
+                //System.out.println("Paramètres : ", snr, snrParBit, trajetsIndirects);
                 throw new ArgumentsException("Erreur lors de la configuration des paramètres de la simulation.");
             }
 
@@ -173,7 +175,9 @@ public class Simulateur {
 	
 	private void simulateurAnalogiqueBruite() {
 	    // Calculate the SNR from Eb/N0
-	    snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+        if (snr == 0){
+	        snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
+        }
 		//double snr = snrParBit;
 	    //System.out.println("SNR utilisé dans la simulation : " + snr);
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
@@ -295,6 +299,9 @@ public class Simulateur {
             } else if (args[i].matches("-snrpb")) {
                 i++;
                 defautLogique = false;
+                if (snr != 0) {
+                    throw new ArgumentsException("Vous ne pouvez pas spécifier à la fois -snrpb et -snr.");
+                }
                 try {
                     snrParBit = Double.valueOf(args[i]);
                 } catch (Exception e) {
@@ -303,6 +310,9 @@ public class Simulateur {
             } else if (args[i].matches("-snr")){
                 i++;
                 defautLogique = false;
+                if (snrParBit != 0) {
+                    throw new ArgumentsException("Vous ne pouvez pas spécifier à la fois -snrpb et -snr.");
+                }
                 try {
                     snr = Double.valueOf(args[i]);
                 } catch (Exception e) {
