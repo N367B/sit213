@@ -45,7 +45,7 @@ Ou, `./simulateur -s -mess 30 -form NRZT -seed 1 -nbEch 30 -ampl -1.0 1.0` pour 
 
 Pour ajouter du bruit, il suffit d'ajouter l'option `-snrpb <snr>` à la commande. Par exemple `./simulateur -s -mess 30 -form RZ -seed 1 -nbEch 30 -ampl -1.0 1.0 -snrpb -5`
 
-Pour ajouter des multi-trajets, il suffit d'ajouter l'option `-ti <nbEchantillonsDecalé> <Atténation>` jusqu'à 5 trajets à la commande. Par exemple, avec du bruit `./simulateur -s -mess 30 -form NRZT -seed 1 -nbEch 30 -ampl -1.0 1.0 -snrpb 20 -ti 8 0.5`. Ou plus simplement sans bruit `./simulateur -s -mess 30 -ti 3 0.5 10 0.3 15 0.1`
+Pour ajouter des multi-trajets, il suffit d'ajouter l'option `-ti <nbEchantillonsDecalés> <Atténation>` jusqu'à 5 trajets à la commande. Par exemple, avec du bruit `./simulateur -s -mess 30 -form NRZT -seed 1 -nbEch 30 -ampl -1.0 1.0 -snrpb 20 -ti 8 0.5`. Ou plus simplement sans bruit avec plusieurs trajets `./simulateur -s -mess 30 -ti 3 0.5 10 0.3 15 0.1`
 
 ## Génération de la documentation
 

@@ -412,6 +412,7 @@ public class Simulateur {
 	
 	/**
 	 * Getter pour snrParBit
+     * @return le SNR par bit en dB
 	 */
 	public double getSnrParBit() {
 		return snrParBit;
