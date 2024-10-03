@@ -238,4 +238,189 @@ public class SimulateurTest {
             assertTrue(teb > 0);  // There should be errors due to noise
         }
     }
+    
+    /**
+     * Test execution of multi-path simulation with delay and attenuation.
+     */
+    @Test
+    public void testSimulationExecutionWithMultiPath() throws Exception {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    /**
+     * Test execution with invalid multi-path arguments.
+     */
+    @Test(expected = ArgumentsException.class)
+    public void testInvalidMultiPathArguments() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-ti", "3", "invalid"};  // Invalid attenuation value
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    /**
+     * Test simulation with both -snrpb and -snr specified, which should throw an exception.
+     */
+    @Test(expected = ArgumentsException.class)
+    public void testSNRandSNRPBConflict() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-snrpb", "10", "-snr", "10"};
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    /**
+     * Test simulation with both -snrpb and -snr specified inversed, which should throw an exception.
+     */
+    @Test(expected = ArgumentsException.class)
+    public void testSNRandSNRPBConflict2() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-snr", "10", "-snrpb", "10"};
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+    
+    /**
+     * Test simulation with -snrpb specified and SNR calculation performed.
+     */
+    @Test
+    public void testSimulationWithSNRPB() throws Exception {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snrpb", "10"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    /**
+     * Test simulation with -snr specified and SNR calculation performed.
+     */
+    @Test
+    public void testSimulationWithSNR() throws Exception {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", "10"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    /**
+     * Test simulation with multi-path (multi-trajet) and SNR.
+     */
+    @Test
+    public void testSimulationWithMultiPathAndSNR() throws Exception {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", "10", "-ti", "3", "0.5", "5", "0.2"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    /**
+     * Test simulation with multi-path (multi-trajet) and SNRPB.
+     */
+    @Test
+    public void testSimulationWithMultiPathAndSNRPB() throws Exception {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snrpb", "10", "-ti", "3", "0.5", "5", "0.2"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    /**
+     * Test simulation with multi-path (multi-trajet) exceeding the maximum allowed paths.
+     */
+    @Test(expected = ArgumentsException.class)
+    public void testTooManyMultiPathArguments() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "1", "0.5", "2", "0.5", "3", "0.5", "4", "0.5", "5", "0.5", "6", "0.5"};
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    /**
+     * Test simulation with sondes and multi-path (multi-trajet).
+     */
+    @Test
+    public void testSimulationWithSondesAndMultiPath() throws Exception {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-s", "-ti", "3", "0.5", "5", "0.2"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute with sondes without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    @Test(expected = ArgumentsException.class)
+    public void testInvalidMessageLength() throws ArgumentsException {
+        String[] args = {"-mess", "0"};  // Message length should be >= 1
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    @Test(expected = ArgumentsException.class)
+    public void testInvalidSNRPBValue() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-snrpb", "invalid"};
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    @Test(expected = ArgumentsException.class)
+    public void testInvalidSNRValue() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-snr", "invalid"};
+        new Simulateur(args);  // Should throw ArgumentsException
+    }
+
+    /*@Test(expected = ArgumentsException.class)
+    public void testSimulationConfigurationError() throws ArgumentsException {
+        String[] args = {"-mess", "101"};  // No valid form, snr, snrpb, or multi-path provided
+        new Simulateur(args);  // Should throw ArgumentsException
+    }*/
+
+    @Test
+    public void testSimulationAnalogiqueBruiteWithSondes() throws Exception {
+        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", "10", "-s"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute with sondes without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    @Test
+    public void testSimulationMultiTrajetWithSondes() throws Exception {
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2", "-s"};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Should execute with sondes without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+        
+        String[] args1 = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2", "-s", "-snr", "10"};
+        simulateur = new Simulateur(args1);
+
+        simulateur.execute();  // Should execute with sondes without errors
+
+        assertNotNull(simulateur.getSource().getInformationEmise());
+        assertNotNull(simulateur.getDestination().getInformationRecue());
+    }
+
+    @Test
+    public void testSetSnrParBit() throws ArgumentsException {
+        String[] args = {"-mess", "101", "-form", "NRZ"};
+        simulateur = new Simulateur(args);
+
+        simulateur.setSnrParBit(5.0);
+        assertEquals(5.0, simulateur.getSnrParBit(), 0.001);
+    }
+
+
 }

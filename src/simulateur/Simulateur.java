@@ -193,7 +193,7 @@ public class Simulateur {
             }
             //System.out.println("SNR utilisé dans la simulation : " + snr);
             TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
-            System.out.println("Transmetteur bruité" + transmetteurAnalogiqueBruite.toString());
+            //System.out.println("Transmetteur bruité" + transmetteurAnalogiqueBruite.toString());
             transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
             recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             transmetteurAnalogiqueBruite.connecter(recepteur);
@@ -409,6 +409,14 @@ public class Simulateur {
 	public void setSnrParBit(double snrParBit) {
 		this.snrParBit = snrParBit;
 	}
+	
+	/**
+	 * Getter pour snrParBit
+	 */
+	public double getSnrParBit() {
+		return snrParBit;
+	}
+
     
     /** La fonction main instancie un Simulateur à l'aide des arguments paramètres 
      * et affiche le résultat de l'exécution d'une transmission.
