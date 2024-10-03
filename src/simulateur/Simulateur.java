@@ -123,21 +123,6 @@ public class Simulateur {
                 //System.out.println("Paramètres : ", snr, snrParBit, trajetsIndirects);
                 throw new ArgumentsException("Erreur lors de la configuration des paramètres de la simulation.");
             }
-
-        /*// Type de transmission
-		if (typeModulation == null) {
-			simulateurLogiqueParfait();
-		} else{
-			if (snrParBit == 0 && trajetsIndirects.isEmpty()) {
-				simulateurAnalogiqueParfait();
-			} else if (!trajetsIndirects.isEmpty()) {
-                simulateurMultiTrajet();
-            }
-            else {
-				simulateurAnalogiqueBruite();
-			}
-		}*/
-
     }
     
     
@@ -206,7 +191,7 @@ public class Simulateur {
             if (snr == 0){
                 snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
             }
-            System.out.println("SNR utilisé dans la simulation : " + snr);
+            //System.out.println("SNR utilisé dans la simulation : " + snr);
             TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
             System.out.println("Transmetteur bruité" + transmetteurAnalogiqueBruite.toString());
             transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
@@ -216,7 +201,7 @@ public class Simulateur {
                 transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
             }
         } else {
-            System.out.println("SNR non spécifié, utilisation d'un récepteur parfait.");
+            //System.out.println("SNR non spécifié, utilisation d'un récepteur parfait.");
             recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             transmetteurAnalogiqueMultiTrajet.connecter(recepteur);
         }
@@ -356,10 +341,6 @@ public class Simulateur {
      */
     public void execute() throws Exception {      
         source.emettre();
-        //System.out.println(typeModulation);
-        //transmetteurLogique.recevoir(source.getInformationEmise());
-        //transmetteurLogique.emettre();
-        //destination.recevoir(transmetteurLogique.getInformationEmise());
     }
    
     /** La méthode qui calcule le taux d'erreur binaire en comparant

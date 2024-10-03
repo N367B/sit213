@@ -18,7 +18,7 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
 
     /**
      * Constructeur prenant en compte plusieurs trajets indirects.
-     * Vérifie que les délais et les atténuations respectent les contraintes (dt >= 0, 0 <= ar <= 1).
+     * Vérifie que les délais et les atténuations respectent les contraintes (dt &gt;= 0, 0 &lt;= ar &lt;= 1).
      * @param trajetsIndirects Liste des couples {dt, ar} où dt est le décalage temporel (en échantillons)
      *                         et ar est le coefficient d'atténuation.
      * @throws IllegalArgumentException si les paramètres sont incorrects.

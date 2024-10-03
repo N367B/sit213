@@ -1,6 +1,6 @@
 # Projet SIT213
 
-Étape 3 - 25/09/2024 - Groupe C1
+Étape 4 - 03/10/2024 - Groupe C1
 
 BODIN Noé
 
@@ -66,6 +66,7 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 - [X] Emetteur (booléen -> analogique(float))
 - [X] Transmetteur Analogique Parfait (analogue(float) -> analogue(float))
 - [X] Transmetteur Analogique Bruité (analogue(float) -> analogue(float)) Ajout de bruit blanc gaussien
+- [X] Transmetteur Analogique Multi-Trajet (analogue(float) -> analogue(float)) Ajout de nulti-trajets
 - [X] Recepteur (analogue(float) -> booléen)
 - [X] Simulateur (Main du projet)
 - [X] Simulateur TEB, test de l'erreur binaire en fonction du SNR et de la forme de signal
