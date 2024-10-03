@@ -208,9 +208,13 @@ public class Simulateur {
             }
             System.out.println("SNR utilisé dans la simulation : " + snr);
             TransmetteurAnalogiqueBruite transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
+            System.out.println("Transmetteur bruité" + transmetteurAnalogiqueBruite.toString());
             transmetteurAnalogiqueMultiTrajet.connecter(transmetteurAnalogiqueBruite);
             recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             transmetteurAnalogiqueBruite.connecter(recepteur);
+            if (affichage) {
+                transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
+            }
         } else {
             System.out.println("SNR non spécifié, utilisation d'un récepteur parfait.");
             recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
@@ -223,9 +227,6 @@ public class Simulateur {
             source.connecter(new SondeLogique("Source", 200));
             emetteur.connecter(new SondeAnalogique("Émetteur"));
             transmetteurAnalogiqueMultiTrajet.connecter(new SondeAnalogique("Transmetteur Multi-Trajet"));
-            if (transmetteurAnalogiqueBruite != null){
-                transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur Bruité"));
-            }
             recepteur.connecter(new SondeLogique("Récepteur", 200));
         }
     }
