@@ -69,6 +69,18 @@ public class TransmetteurAnalogiqueMultiTrajetTest {
         }
     }
 
+    /**
+     * Test pour verifier si l'execution de la méthode main du transmetteur fonctionne correctement
+     */
+    @Test
+    public void testMainMethodExecution() {
+        // Simule l'exécution de la méthode main pour s'assurer qu'il n'y a pas d'erreurs
+        try {
+            TransmetteurAnalogiqueMultiTrajet.main(new String[]{});
+        } catch (Exception e) {
+            fail("La méthode main ne devrait pas lever d'exception : " + e.getMessage());
+        }
+    }
 
     /**
      * Test qui reçoit une information nulle et donc leve l'exception InformationNonConformeException
@@ -112,6 +124,36 @@ public class TransmetteurAnalogiqueMultiTrajetTest {
         transmetteur.emettre();  
     }
 
+    /**
+     * Test avec un décalage plus grand que la taille du message
+     */
+    @Test
+    public void testDecalagePlusGrandQueMessage() throws InformationNonConformeException {
+        List<float[]> trajetsIndirects = new ArrayList<>();
+        trajetsIndirects.add(new float[]{10, 0.5f});  // dt = 10 (bigger than message size)
+
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
+
+        // Create a short message
+        Information<Float> informationAnalogique = new Information<>();
+        informationAnalogique.add(1.0f);
+        informationAnalogique.add(0.5f);
+
+        // Create a mock destination to capture the transmitted signal
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        // Emit the message
+        transmetteur.recevoir(informationAnalogique);
+
+        // Check that the transmitted signal is the same as the input, since dt > message size
+        Information<Float> expectedSignal = new Information<>();
+        expectedSignal.add(1.0f);
+        expectedSignal.add(0.5f);
+
+        Information<Float> actualSignal = mockDestination.getInformationRecue();
+        assertEquals(expectedSignal, actualSignal);
+    }
 
     /**
      * Test qui recoit une information avec plusieurs destinations

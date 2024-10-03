@@ -125,7 +125,7 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
             emetteur.recevoir(infoLogique);
             Information<Float> infoAnalogiqueSansBruit = emetteur.getInformationEmise();
 
-            System.out.println("Signal analogique sans bruit : " + infoAnalogiqueSansBruit);
+            //System.out.println("Signal analogique sans bruit : " + infoAnalogiqueSansBruit);
 
             // Transmettre le signal à travers un canal avec trajets multiples
             TransmetteurAnalogiqueMultiTrajet transmetteur = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
@@ -133,7 +133,7 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
             transmetteur.recevoir(infoAnalogiqueSansBruit);
             Information<Float> infoAnalogiqueAvecTrajets = transmetteur.getInformationEmise();
 
-            System.out.println("Signal analogique avec trajets multiples : " + infoAnalogiqueAvecTrajets);
+            //System.out.println("Signal analogique avec trajets multiples : " + infoAnalogiqueAvecTrajets);
 
             // Créer un récepteur et recevoir le signal modifié avec trajets multiples
             Recepteur recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, typeModulation);
@@ -141,7 +141,7 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
             recepteur.recevoir(infoAnalogiqueAvecTrajets);
             Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
 
-            System.out.println("Message logique reçu : " + infoLogiqueRecue);
+            //System.out.println("Message logique reçu : " + infoLogiqueRecue);
 
         } catch (Exception e) {
             e.printStackTrace();
