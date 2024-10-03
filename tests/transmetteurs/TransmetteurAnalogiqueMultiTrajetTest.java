@@ -180,4 +180,152 @@ public class TransmetteurAnalogiqueMultiTrajetTest {
         assertEquals(informationAnalogique, mockDestination1.getInformationRecue());
         assertEquals(informationAnalogique, mockDestination2.getInformationRecue());
     }
+    
+
+    /**
+     * Test with maximum allowed number of multi-path trajectories (5).
+     */
+    @Test
+    public void testMaximumTrajectories() throws InformationNonConformeException {
+        List<float[]> trajetsMax = new ArrayList<>();
+        trajetsMax.add(new float[]{1, 0.5f});
+        trajetsMax.add(new float[]{2, 0.3f});
+        trajetsMax.add(new float[]{3, 0.2f});
+        trajetsMax.add(new float[]{4, 0.1f});
+        trajetsMax.add(new float[]{5, 0.05f});
+
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(trajetsMax);
+
+        Information<Float> informationAnalogique = new Information<>();
+        for (int i = 0; i < 6; i++) {
+            informationAnalogique.add(1.0f);  // Constante valeur pour tester les effets
+        }
+
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        transmetteur.recevoir(informationAnalogique);
+
+        // Vérification que les trajectoires sont appliquées correctement
+        Information<Float> actualSignal = mockDestination.getInformationRecue();
+        assertNotNull(actualSignal);
+        assertEquals(informationAnalogique.nbElements(), actualSignal.nbElements());
+    }
+
+    /**
+     * Test with a single trajectory (no multi-path).
+     */
+    @Test
+    public void testSingleTrajectory() throws InformationNonConformeException {
+        List<float[]> singleTrajet = new ArrayList<>();
+        singleTrajet.add(new float[]{2, 0.8f});
+
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(singleTrajet);
+
+        Information<Float> informationAnalogique = new Information<>();
+        informationAnalogique.add(1.0f);  // t=0
+        informationAnalogique.add(0.5f);  // t=1
+
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        transmetteur.recevoir(informationAnalogique);
+
+        Information<Float> expectedSignal = new Information<>();
+        expectedSignal.add(1.0f);  // No multi-path effect on t=0
+        expectedSignal.add(0.5f);  // No multi-path effect on t=1
+
+        assertEquals(expectedSignal, mockDestination.getInformationRecue());
+    }
+
+    /**
+     * Test with large delays greater than the signal length.
+     */
+    @Test
+    public void testLargeDelay() throws InformationNonConformeException {
+        List<float[]> largeDelay = new ArrayList<>();
+        largeDelay.add(new float[]{10, 0.5f});  // Delay larger than signal length
+
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(largeDelay);
+
+        Information<Float> informationAnalogique = new Information<>();
+        informationAnalogique.add(1.0f);
+        informationAnalogique.add(0.5f);
+
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        transmetteur.recevoir(informationAnalogique);
+
+        // With a delay larger than the signal, the signal should remain the same
+        assertEquals(informationAnalogique, mockDestination.getInformationRecue());
+    }
+
+    /**
+     * Test with very small attenuation (ar = 0.01).
+     */
+    @Test
+    public void testSmallAttenuation() throws InformationNonConformeException {
+        List<float[]> smallAttenuation = new ArrayList<>();
+        smallAttenuation.add(new float[]{1, 0.01f});
+
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(smallAttenuation);
+
+        Information<Float> informationAnalogique = new Information<>();
+        informationAnalogique.add(1.0f);  // t=0
+        informationAnalogique.add(0.5f);  // t=1
+
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        transmetteur.recevoir(informationAnalogique);
+
+        Information<Float> expectedSignal = new Information<>();
+        expectedSignal.add(1.0f);  // t=0
+        expectedSignal.add(0.51f); // t=1, small attenuation effect
+
+        assertEquals(expectedSignal.iemeElement(1), mockDestination.getInformationRecue().iemeElement(1), 0.0001);
+    }
+
+    /**
+     * Test with no multi-path trajectories (default behavior).
+     */
+    @Test
+    public void testNoMultiPath() throws InformationNonConformeException {
+        transmetteur = new TransmetteurAnalogiqueMultiTrajet(new ArrayList<>());  // No paths
+
+        Information<Float> informationAnalogique = new Information<>();
+        informationAnalogique.add(1.0f);  // t=0
+        informationAnalogique.add(0.5f);  // t=1
+
+        MockDestination<Float> mockDestination = new MockDestination<>();
+        transmetteur.connecter(mockDestination);
+
+        transmetteur.recevoir(informationAnalogique);
+
+        // Signal should be identical, no multi-path effect
+        assertEquals(informationAnalogique, mockDestination.getInformationRecue());
+    }
+
+    /**
+     * Test with invalid parameters (negative dt).
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidParameters() {
+        List<float[]> invalidParams = new ArrayList<>();
+        invalidParams.add(new float[]{-3, 0.5f});  // Invalid negative delay
+
+        new TransmetteurAnalogiqueMultiTrajet(invalidParams);  // Should throw exception
+    }
+
+    /**
+     * Test with invalid parameters (attenuation greater than 1.0).
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidAttenuation() {
+        List<float[]> invalidParams = new ArrayList<>();
+        invalidParams.add(new float[]{3, 1.2f});  // Invalid attenuation greater than 1.0
+
+        new TransmetteurAnalogiqueMultiTrajet(invalidParams);  // Should throw exception
+    }
 }
