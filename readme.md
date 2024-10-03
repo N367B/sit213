@@ -45,6 +45,8 @@ Ou, `./simulateur -s -mess 30 -form NRZT -seed 1 -nbEch 30 -ampl -1.0 1.0` pour 
 
 Pour ajouter du bruit, il suffit d'ajouter l'option `-snrpb <snr>` à la commande. Par exemple `./simulateur -s -mess 30 -form RZ -seed 1 -nbEch 30 -ampl -1.0 1.0 -snrpb -5`
 
+Pour ajouter des multi-trajets, il suffit d'ajouter l'option `-ti <nbEchantillonsDecalé> <Atténation>` jusqu'à 5 trajets à la commande. Par exemple, avec du bruit `./simulateur -s -mess 30 -form NRZT -seed 1 -nbEch 30 -ampl -1.0 1.0 -snrpb 20 -ti 8 0.5`. Ou plus simplement sans bruit `./simulateur -s -mess 30 -ti 3 0.5 10 0.3 15 0.1`
+
 ## Génération de la documentation
 
 Pour générer la documentation, il suffit de lancer la commande `./genDoc` dans le répertoire racine du projet.
@@ -66,7 +68,7 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 - [X] Emetteur (booléen -> analogique(float))
 - [X] Transmetteur Analogique Parfait (analogue(float) -> analogue(float))
 - [X] Transmetteur Analogique Bruité (analogue(float) -> analogue(float)) Ajout de bruit blanc gaussien
-- [X] Transmetteur Analogique Multi-Trajet (analogue(float) -> analogue(float)) Ajout de nulti-trajets
+- [X] Transmetteur Analogique Multi-Trajet (analogue(float) -> analogue(float)) Ajout de multi-trajets
 - [X] Recepteur (analogue(float) -> booléen)
 - [X] Simulateur (Main du projet)
 - [X] Simulateur TEB, test de l'erreur binaire en fonction du SNR et de la forme de signal
