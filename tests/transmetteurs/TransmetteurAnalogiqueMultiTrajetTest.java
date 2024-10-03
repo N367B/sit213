@@ -213,6 +213,24 @@ public class TransmetteurAnalogiqueMultiTrajetTest {
     }
 
     /**
+     * Test with more than the maximum allowed number of multi-path trajectories (6).
+     * @throws IllegalArgumentException
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoreThanMaximumTrajectories() throws InformationNonConformeException {
+        List<float[]> trajetsMax = new ArrayList<>();
+        trajetsMax.add(new float[]{1, 0.5f});
+        trajetsMax.add(new float[]{2, 0.3f});
+        trajetsMax.add(new float[]{3, 0.2f});
+        trajetsMax.add(new float[]{4, 0.1f});
+        trajetsMax.add(new float[]{5, 0.05f});
+        trajetsMax.add(new float[]{6, 0.01f});  // More than the maximum allowed
+
+        new TransmetteurAnalogiqueMultiTrajet(trajetsMax);  // Should throw exception
+    }
+
+
+    /**
      * Test with a single trajectory (no multi-path).
      */
     @Test

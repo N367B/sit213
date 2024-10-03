@@ -26,6 +26,13 @@ public class TransmetteurAnalogiqueMultiTrajet extends Transmetteur<Float, Float
     public TransmetteurAnalogiqueMultiTrajet(List<float[]> trajetsIndirects) {
         super();
         this.trajetsIndirects = new ArrayList<>();
+        //Vérification du nombre de trajets indirects
+        /*if (trajetsIndirects.size() == 0) {
+            throw new IllegalArgumentException("Le nombre de trajets indirects doit être supérieur à 0.");
+        }*/
+        if (trajetsIndirects.size() > 5) {
+            throw new IllegalArgumentException("Le nombre de trajets indirects ne doit pas dépasser 5.");
+        }
 
         // Vérification des paramètres
         for (float[] trajet : trajetsIndirects) {
