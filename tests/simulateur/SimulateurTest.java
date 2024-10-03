@@ -377,11 +377,11 @@ public class SimulateurTest {
         new Simulateur(args);  // Should throw ArgumentsException
     }
 
-    /*@Test(expected = ArgumentsException.class)
+    @Test
     public void testSimulationConfigurationError() throws ArgumentsException {
         String[] args = {"-mess", "101"};  // No valid form, snr, snrpb, or multi-path provided
         new Simulateur(args);  // Should throw ArgumentsException
-    }*/
+    }
 
     @Test
     public void testSimulationAnalogiqueBruiteWithSondes() throws Exception {
@@ -422,5 +422,116 @@ public class SimulateurTest {
         assertEquals(5.0, simulateur.getSnrParBit(), 0.001);
     }
 
+    @Test
+    public void testTEBWithDifferentSNRLevels() throws Exception {
+        double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
+        float previousTeb = 1.0f;
+        float margin = 0.05f;  // Allowable margin for TEB comparison
+    
+        for (double snr : snrLevels) {
+            String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", String.valueOf(snr)};
+            simulateur = new Simulateur(args);
+    
+            simulateur.execute();  // Execute the simulation
+            float teb = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+    
+            // Check that the TEB decreases as the SNR increases, within a margin
+            assertTrue("TEB should decrease as SNR increases", teb <= previousTeb + margin);
+            previousTeb = teb;
+        }
+    }
+    
+    @Test
+    public void testTEBWithDifferentSNRPBLevels() throws Exception {
+        double[] snrpbLevels = {-10.0, -5.0, 0.1, 5.0, 10.0};  // Different SNRPB levels to test
+        float previousTeb = 1.0f;
+        float margin = 0.05f;  // Allowable margin for TEB comparison
+    
+        for (double snrpb : snrpbLevels) {
+            String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snrpb", String.valueOf(snrpb)};
+            simulateur = new Simulateur(args);
+    
+            simulateur.execute();  // Execute the simulation
+            float teb = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+    
+            // Check that the TEB decreases as the SNRPB increases, within a margin
+            assertTrue("TEB should decrease as SNRPB increases", teb <= previousTeb + margin);
+            previousTeb = teb;
+        }
+    }
+    
+    @Test
+    public void testTEBWithMultiPathAndSNR() throws Exception {
+        double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
+        float previousTeb = 1.0f;
+        float margin = 0.05f;  // Allowable margin for TEB comparison
+    
+        for (double snr : snrLevels) {
+            String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", String.valueOf(snr), "-ti", "3", "0.5", "5", "0.2"};
+            simulateur = new Simulateur(args);
+    
+            simulateur.execute();  // Execute the simulation
+            float teb = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+    
+            // Check that the TEB decreases as the SNR increases, even with multi-path, within a margin
+            assertTrue("TEB should decrease as SNR increases", teb <= previousTeb + margin);
+            previousTeb = teb;
+        }
+    }
+    
+    /**
+     * Check if the calculated TEB for a given SNR and modulation type matches the expected theoretical TEB.
+     */
+    @Test
+    public void testCalculatedTEBMatchesTheoreticalTEBWithSNR() throws Exception {
+        double snr = -10.0;
+        float expectedTheoreticalTEB = 0.12f; 
+        float margin = 0.05f;
+        String[] args = {"-mess", "300", "-snr", String.valueOf(snr)};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Execute the simulation
+        float calculatedTEB = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+
+        // Check that the calculated TEB is within a margin of the theoretical TEB
+        assertEquals("TEB should match the theoretical value within a margin", expectedTheoreticalTEB, calculatedTEB, margin);
+    }
+
+    /**
+     * Check if the calculated TEB for a given SNRPB and modulation type matches the expected theoretical TEB.
+     */
+    @Test
+    public void testCalculatedTEBMatchesTheoreticalTEBWithSNRPB() throws Exception {
+        double snrpb = 5.0;
+        float expectedTheoreticalTEB = 0.03f;
+        float margin = 0.04f;
+
+        String[] args = {"-mess", "300", "-snrpb", String.valueOf(snrpb)};
+        simulateur = new Simulateur(args);
+
+        simulateur.execute();  // Execute the simulation
+        float calculatedTEB = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+
+        // Check that the calculated TEB is within a margin of the theoretical TEB
+        assertEquals("TEB should match the theoretical value within a margin", expectedTheoreticalTEB, calculatedTEB, margin);
+    }
+
+      /**
+     * Check if the calculated TEB for multi-path simulation with complex multi-trajet (without noise) matches the expected theoretical TEB.
+     */
+    @Test
+    public void testCalculatedTEBMatchesTheoreticalTEBWithComplexMultiPath() throws Exception {
+        float expectedTheoreticalTEB = 0.24f;  
+
+        String[] args = {"-mess", "300", "-ti", "35", "0.7", "25", "0.4", "15", "0.3"};
+        simulateur = new Simulateur(args);
+        float margin = 0.05f;
+
+        simulateur.execute();  // Execute the simulation
+        float calculatedTEB = simulateur.calculTauxErreurBinaire();  // Calculate the TEB
+
+        // Check that the calculated TEB is within a margin of the theoretical TEB for complex multi-path
+        assertEquals("TEB should match the theoretical value for complex multi-path within a margin", expectedTheoreticalTEB, calculatedTEB, margin);
+    }
 
 }
