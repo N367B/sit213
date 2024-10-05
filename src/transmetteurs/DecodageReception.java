@@ -36,7 +36,7 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
 		Etat etat = Etat.Q0; //etat initial
 		char bit1 = bits.charAt(0);
 		char bit2 = bits.charAt(1);
-		char bit3 = bits.charAt(3);
+		char bit3 = bits.charAt(2);
 		
 		switch (etat) {
 		case Q0 : 
@@ -141,5 +141,16 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
         informationEmise = informationBitCode; 
 		
 	}
+	
+	 public static void main(String[] args) {
+	        // Exemples de paquets à corriger via l'automate
+	        String[] paquets = {"000", "001", "010", "011", "100", "101", "110", "111"};
+	        
+
+	        for (String paquet : paquets) {
+	            int resultat = automate(paquet);
+	            System.out.println("Paquet : " + paquet + " -> Résultat : " + resultat);
+	        }
+	    }
 
 }
