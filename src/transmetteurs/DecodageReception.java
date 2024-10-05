@@ -111,7 +111,7 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
 		}else {
 			nbBit = informationRecue.nbElements();
 			
-			for (int i =0; i<nbBit; i = i+3) {
+			for (int i =0; i<nbBit; i+=3) {
 				String chaine = "";
 				chaine = chaine + informationRecue.iemeElement(i);
 				chaine = chaine + informationRecue.iemeElement(i+1);
@@ -123,6 +123,10 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
 	 
 	@Override
 	public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
+		
+		if (information == null || information.nbElements() == 0) {
+            throw new InformationNonConformeException("L'information reçue est nulle ou invalide.");
+        }
 		
 		informationRecue = information;
 		decodage();

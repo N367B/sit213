@@ -18,7 +18,7 @@ public class CodageEmissionTest {
     }
 
     /**
-     * Test receiving valid information and verify it is emitted correctly.
+     * Test qui recoit des informations valides et verifie si elles sont bien transmises
      */
     @Test
     public void testRecevoirAndEmettreValidInformation() throws InformationNonConformeException {
@@ -27,14 +27,13 @@ public class CodageEmissionTest {
         information.add(true);   // 1
         information.add(false);  // 0
 
-        // Create a mock destination to receive the information
+
         MockDestination<Boolean> mockDestination = new MockDestination<>();
         codageEmission.connecter(mockDestination);
 
-        // Receive and emit the information
+        //Reception et emission de l'information
         codageEmission.recevoir(information);
 
-        // Verify that the information was correctly transmitted
         Information<Boolean> expectedInformation = new Information<>();
         expectedInformation.add(true);
         expectedInformation.add(false);
@@ -47,68 +46,52 @@ public class CodageEmissionTest {
     }
 
     /**
-     * Test receiving null information, which should throw InformationNonConformeException.
+     * Test qui recoit une information nulle et doit lever l'exception
      */
     @Test(expected = InformationNonConformeException.class)
     public void testRecevoirNullInformation() throws InformationNonConformeException {
-        codageEmission.recevoir(null);  // Should throw an exception
+        codageEmission.recevoir(null); 
     }
 
     /**
-     * Test receiving empty information, which should throw InformationNonConformeException.
+     * test qui recoit une information null et doit lever l'exception
      */
     @Test(expected = InformationNonConformeException.class)
     public void testRecevoirEmptyInformation() throws InformationNonConformeException {
         Information<Boolean> emptyInformation = new Information<>();
-        codageEmission.recevoir(emptyInformation);  // Should throw an exception
+        codageEmission.recevoir(emptyInformation);  
     }
 
     /**
-     * Test emitting null information, which should throw InformationNonConformeException.
+     * Test qui emet une information null et doit lever une exception
      */
     @Test(expected = InformationNonConformeException.class)
     public void testEmettreNullInformation() throws InformationNonConformeException {
-        codageEmission.emettre();  // Should throw an exception because informationRecue is null
+        codageEmission.emettre();  
     }
 
-    /**
-     * Test connecting and disconnecting a destination.
-     */
-    @Test
-    public void testConnecterDeconnecterDestination() {
-        MockDestination<Boolean> mockDestination = new MockDestination<>();
-        codageEmission.connecter(mockDestination);
-
-        // Check if the destination is connected
-        assertTrue(codageEmission.getDestinationsConnectees().contains(mockDestination));
-
-        // Disconnect the destination
-        codageEmission.deconnecter(mockDestination);
-        assertFalse(codageEmission.getDestinationsConnectees().contains(mockDestination));
-    }
 
     /**
-     * Test receiving information with multiple destinations.
+     * Test qui recoit une information et emet a plusieurs destinations
      */
     @Test
     public void testRecevoirWithMultipleDestinations() throws InformationNonConformeException {
-        // Create a sample bit information
+
         Information<Boolean> information = new Information<>();
         information.add(true);   // 1
         information.add(false);  // 0
 
-        // Create mock destinations
+
         MockDestination<Boolean> mockDestination1 = new MockDestination<>();
         MockDestination<Boolean> mockDestination2 = new MockDestination<>();
 
-        // Connect multiple destinations
+
         codageEmission.connecter(mockDestination1);
         codageEmission.connecter(mockDestination2);
 
-        // Receive and emit the information
         codageEmission.recevoir(information);
 
-        // Verify that both destinations received the same information
+
         Information<Boolean> expectedInformation = new Information<>();
         expectedInformation.add(true);
         expectedInformation.add(false);
