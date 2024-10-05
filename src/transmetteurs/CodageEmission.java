@@ -17,13 +17,19 @@ public class CodageEmission extends Transmetteur<Boolean, Boolean> {
     	super();
     }
     
-    private Information<Boolean> informationBitCode = new Information();
+    private Information<Boolean> informationBitCode = new Information<>();
 
     /**
      * Prend la liste d'information en parametre et converti le bit en une sequence de 3 bits
      */
 	@Override
 	public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
+		
+		if (information == null || information.nbElements() == 0) {
+            throw new InformationNonConformeException("L'information reçue est nulle ou invalide.");
+        }
+		this.informationRecue = information;
+		informationBitCode = new Information<>();
 		
 		for (boolean bit : information) {
 			if (bit) { //Si le bit reçu est 1
@@ -36,7 +42,7 @@ public class CodageEmission extends Transmetteur<Boolean, Boolean> {
 				informationBitCode.add(false);
 			}
 		}
-		emettre();
+		this.emettre();
 	}
 
 	/**
