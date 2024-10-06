@@ -59,6 +59,39 @@ public class CodageEmission extends Transmetteur<Boolean, Boolean> {
 	        informationEmise = informationBitCode; 
 	}
     
-    
+    public static void main(String[] args) {
+        try {
+            // Create a fixed source with a simple message (e.g., "101")
+            Source<Boolean> source = new SourceFixe("101");
+
+            // Create the CodageEmission (the transmitter that will encode the bits)
+            CodageEmission codeur = new CodageEmission();
+
+            // Create a destination to receive the encoded message
+            DestinationFinale destination = new DestinationFinale();
+
+            // Connect the source to the codeur
+            source.connecter(codeur);
+
+            // Connect the codeur to the destination
+            codeur.connecter(destination);
+
+            // Emit the message from the source
+            source.emettre();
+
+            // Get and print the received information from the destination
+            Information<Boolean> informationRecue = destination.getInformationRecue();
+            System.out.println("Message encodé reçu par la destination :");
+            for (Boolean bit : informationRecue) {
+                System.out.print(bit ? "1" : "0");
+            }
+            System.out.println();  // New line after the message
+            
+        } catch (InformationNonConformeException e) {
+            System.err.println("Erreur lors de l'émission ou la réception de l'information : " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

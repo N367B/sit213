@@ -20,14 +20,15 @@ public class DecodageReceptionTest {
 
     @Test
     public void testAutomate() {
-        assertEquals(0, DecodageReception.automate("000"));
-        assertEquals(1, DecodageReception.automate("001"));
-        assertEquals(0, DecodageReception.automate("010"));
-        assertEquals(0, DecodageReception.automate("011"));
-        assertEquals(1, DecodageReception.automate("100"));
-        assertEquals(1, DecodageReception.automate("101"));
-        assertEquals(0, DecodageReception.automate("110"));
-        assertEquals(1, DecodageReception.automate("111"));
+        // Testing the automate function with boolean inputs instead of 0/1 strings
+        assertFalse(DecodageReception.automate(new boolean[]{false, false, false}));  // false -> 0
+        assertTrue(DecodageReception.automate(new boolean[]{false, false, true}));   // true -> 1
+        assertFalse(DecodageReception.automate(new boolean[]{false, true, false}));   // false -> 0
+        assertFalse(DecodageReception.automate(new boolean[]{false, true, true}));    // false -> 0
+        assertTrue(DecodageReception.automate(new boolean[]{true, false, false}));    // true -> 1
+        assertTrue(DecodageReception.automate(new boolean[]{true, false, true}));     // true -> 1
+        assertFalse(DecodageReception.automate(new boolean[]{true, true, false}));    // false -> 0
+        assertTrue(DecodageReception.automate(new boolean[]{true, true, true}));      // true -> 1
     }
 
     @Test(expected = InformationNonConformeException.class)
@@ -43,34 +44,34 @@ public class DecodageReceptionTest {
 
     @Test
     public void testRecevoirInformationValide() throws InformationNonConformeException {
-        // Création d'une information de test correspondant à "000" -> 0, "001" -> 1, "010" -> 0
+        // Création d'une information de test avec des paquets de 3 bits
         Information<Boolean> information = new Information<>();
         
-        // Paquet 1 : "000" -> 0
-        information.add(false); // Bit 1: 0
-        information.add(false); // Bit 2: 0
-        information.add(false); // Bit 3: 0
+        // Paquet 1 : false, false, false -> false
+        information.add(false); // Bit 1
+        information.add(false); // Bit 2
+        information.add(false); // Bit 3
         
-        // Paquet 2 : "001" -> 1
-        information.add(false); // Bit 1: 0
-        information.add(false); // Bit 2: 0
-        information.add(true);  // Bit 3: 1
+        // Paquet 2 : false, false, true -> true
+        information.add(false); // Bit 1
+        information.add(false); // Bit 2
+        information.add(true);  // Bit 3
         
-        // Paquet 3 : "010" -> 0
-        information.add(false); // Bit 1: 0
-        information.add(true);  // Bit 2: 1
-        information.add(false); // Bit 3: 0
+        // Paquet 3 : false, true, false -> false
+        information.add(false); // Bit 1
+        information.add(true);  // Bit 2
+        information.add(false); // Bit 3
         
         // Envoi de l'information à la méthode recevoir
         decodageReception.recevoir(information);
         
-        // Vérification des résultats
+        // Vérification des résultats attendus
         Information<Boolean> resultatAttendu = new Information<>();
-        resultatAttendu.add(false); // 0 -> "000"
-        resultatAttendu.add(true);  // 1 -> "001"
-        resultatAttendu.add(false); // 0 -> "010"
+        resultatAttendu.add(false); // false -> "000"
+        resultatAttendu.add(true);  // true -> "001"
+        resultatAttendu.add(false); // false -> "010"
 
-        // Assurez-vous que la destination reçoit les informations attendues
+        // Vérification que la destination reçoit les informations attendues
         assertEquals(resultatAttendu.nbElements(), mockDestination.getInformationRecue().nbElements());
 
         for (int i = 0; i < resultatAttendu.nbElements(); i++) {
@@ -80,6 +81,7 @@ public class DecodageReceptionTest {
 
     @Test(expected = InformationNonConformeException.class)
     public void testRecevoirInformationIndivisibleParTrois() throws InformationNonConformeException {
+        // Création d'une information invalide qui n'est pas divisible par 3
         Information<Boolean> information = new Information<>();
         information.add(true);   // 1
         information.add(false);  // 0
@@ -88,4 +90,3 @@ public class DecodageReceptionTest {
         decodageReception.recevoir(information); // Devrait lever une exception
     }
 }
-
