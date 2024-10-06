@@ -162,20 +162,33 @@ public class Simulateur {
     }
     
 	private void simulateurAnalogiqueParfait() {
-		emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
-		source.connecter(emetteur);
+        emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
+        if (utiliserCodeur) {
+            source.connecter(codeur);
+            codeur.connecter(emetteur);
+        } else {
+            source.connecter(emetteur);
+        }
 		transmetteurAnalogique = new TransmetteurAnalogiqueParfait();
 		emetteur.connecter(transmetteurAnalogique);
 		recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
 		transmetteurAnalogique.connecter(recepteur);
 		destination = new DestinationFinale();
-		recepteur.connecter(destination);
-		
+        if (utiliserCodeur) {
+            recepteur.connecter(decodeur);
+            decodeur.connecter(destination);
+        } else {
+		    recepteur.connecter(destination);
+        }
 		if (affichage) {
             source.connecter(new SondeLogique("Source", 200));
             emetteur.connecter(new SondeAnalogique("Emetteur"));
             transmetteurAnalogique.connecter(new SondeAnalogique("Transmetteur"));
             recepteur.connecter(new SondeLogique("Recepteur", 200));
+            if (utiliserCodeur) {
+                codeur.connecter(new SondeLogique("Codeur", 200));
+                decodeur.connecter(new SondeLogique("Decodeur", 200));
+            }
 		}
 	}
 	
@@ -184,29 +197,45 @@ public class Simulateur {
         if (snr == 0){
 	        snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
         }
-		//double snr = snrParBit;
-	    //System.out.println("SNR utilisé dans la simulation : " + snr);
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
-	    source.connecter(emetteur);
+        if (utiliserCodeur) {
+            source.connecter(codeur);
+            codeur.connecter(emetteur);
+        } else {
+	        source.connecter(emetteur);
+        }
 	    transmetteurAnalogiqueBruite = new TransmetteurAnalogiqueBruite(snr, nbEchantillonsParBit);
 	    emetteur.connecter(transmetteurAnalogiqueBruite);
 	    recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
 	    transmetteurAnalogiqueBruite.connecter(recepteur);
 	    destination = new DestinationFinale();
-	    recepteur.connecter(destination);
-	    
+        if (utiliserCodeur) {
+            recepteur.connecter(decodeur);
+            decodeur.connecter(destination);
+        } else {
+	        recepteur.connecter(destination);
+        }
+
 	    if (affichage) {
 	        source.connecter(new SondeLogique("Source", 200));
 	        emetteur.connecter(new SondeAnalogique("Émetteur"));
 	        transmetteurAnalogiqueBruite.connecter(new SondeAnalogique("Transmetteur"));
 	        recepteur.connecter(new SondeLogique("Récepteur", 200));
+            if (utiliserCodeur) {
+                codeur.connecter(new SondeLogique("Codeur", 200));
+                decodeur.connecter(new SondeLogique("Décodeur", 200));
+            }
 	    }
 	}
 
     private void simulateurMultiTrajet() {
         emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
-        source.connecter(emetteur);
-
+        if (utiliserCodeur) {
+            source.connecter(codeur);
+            codeur.connecter(emetteur);
+        } else {
+            source.connecter(emetteur);
+        }
         TransmetteurAnalogiqueMultiTrajet transmetteurAnalogiqueMultiTrajet = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
         emetteur.connecter(transmetteurAnalogiqueMultiTrajet);
 
@@ -229,13 +258,21 @@ public class Simulateur {
             transmetteurAnalogiqueMultiTrajet.connecter(recepteur);
         }
         destination = new DestinationFinale();
-        recepteur.connecter(destination);
-
+        if (utiliserCodeur) {
+            recepteur.connecter(decodeur);
+            decodeur.connecter(destination);
+        } else {
+            recepteur.connecter(destination);
+        }
         if (affichage) {
             source.connecter(new SondeLogique("Source", 200));
             emetteur.connecter(new SondeAnalogique("Émetteur"));
             transmetteurAnalogiqueMultiTrajet.connecter(new SondeAnalogique("Transmetteur Multi-Trajet"));
             recepteur.connecter(new SondeLogique("Récepteur", 200));
+            if (utiliserCodeur) {
+                codeur.connecter(new SondeLogique("Codeur", 200));
+                decodeur.connecter(new SondeLogique("Décodeur", 200));
+            }
         }
     }
 
