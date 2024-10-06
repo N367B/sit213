@@ -81,6 +81,14 @@ public class Simulateur {
     /** Les trajets indirects pour le transmetteur analogique à trajets multiples */
     private List<float[]> trajetsIndirects = new ArrayList<>();
 
+    /** Indique si un codeur est utilisé */
+    private boolean utiliserCodeur = false;
+
+    /** Le codeur utilisé */
+    private CodageEmission codeur = null;
+    
+    /** Le décodeur utilisé */
+    private DecodageReception decodeur = null;
 
     /** Le constructeur de Simulateur construit une chaîne de
      * transmission composée d'une Source &lt;Boolean&gt;, d'une Destination
@@ -107,6 +115,11 @@ public class Simulateur {
             source = new SourceFixe(messageString);
         }
         
+        if (utiliserCodeur) {
+            // Create the encoder and decoder
+            codeur = new CodageEmission();
+            decodeur = new DecodageReception();
+        }
         if (defautLogique) {
             //System.out.println("Simulateur logique parfait");
             simulateurLogiqueParfait();
@@ -128,13 +141,23 @@ public class Simulateur {
     
     private void simulateurLogiqueParfait() {
         transmetteurLogique = new TransmetteurParfait();
-        source.connecter(transmetteurLogique);
         destination = new DestinationFinale();
-        transmetteurLogique.connecter(destination);
-        
+        if (utiliserCodeur) {
+            source.connecter(codeur);
+            codeur.connecter(transmetteurLogique);
+            transmetteurLogique.connecter(decodeur);
+            decodeur.connecter(destination);
+        } else {
+            source.connecter(transmetteurLogique);
+            transmetteurLogique.connecter(destination);
+        }
         if (affichage) {
             source.connecter(new SondeLogique("Source", 200));
             transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+            if (utiliserCodeur) {
+                codeur.connecter(new SondeLogique("Codeur", 200));
+                decodeur.connecter(new SondeLogique("Décodeur", 200));
+            }
         }
     }
     
@@ -238,7 +261,9 @@ public class Simulateur {
         for (int i = 0; i < args.length; i++) {
             if (args[i].matches("-s")) {
                 affichage = true;
-            } else if (args[i].matches("-seed")) {
+            } else if (args[i].matches("-codeur")) {
+                utiliserCodeur = true;
+            }else if (args[i].matches("-seed")) {
                 aleatoireAvecGerme = true;
                 i++;
                 try {
