@@ -47,18 +47,17 @@ plt.title('TEB en fonction du SNR pour différentes modulations (Avec et Sans Co
 plt.xlabel('SNR (dB)')
 plt.ylabel('Taux d\'Erreur Binaire (TEB)')
 
-figure = plt.figure(1)
-ax = figure.add_subplot(111)
-ax.set_yscale('log')
-# Inverser les axes si nécessaire
-#plt.gca().invert_xaxis()
-#plt.gca().invert_yaxis()
+# Set y-axis to logarithmic scale
+plt.yscale('log')
+
+# Optionally, set x-axis limits if needed
+plt.xlim(min(x_nrz), max(x_nrz))
 
 # Ajouter une légende pour différencier les courbes
 plt.legend()
 
 # Enregistrer l'image sous forme de fichier PNG
-plt.savefig('courbes_teb_smooth_with_without_codeur.png', dpi=300)
+plt.savefig('courbes_teb_smooth_with_without_codeur_logscale.png', dpi=300)
 
 # Afficher le graphique
 plt.show()
