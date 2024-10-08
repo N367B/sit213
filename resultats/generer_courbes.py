@@ -47,6 +47,9 @@ plt.title('TEB en fonction du SNR pour différentes modulations (Avec et Sans Co
 plt.xlabel('SNR (dB)')
 plt.ylabel('Taux d\'Erreur Binaire (TEB)')
 
+figure = plt.figure(1)
+ax = figure.add_subplot(111)
+ax.set_yscale('log')
 # Inverser les axes si nécessaire
 #plt.gca().invert_xaxis()
 #plt.gca().invert_yaxis()
