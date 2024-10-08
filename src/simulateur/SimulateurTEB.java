@@ -64,7 +64,7 @@ public class SimulateurTEB {
                     // Simulations without the codeur
                     Future<SimulationResult> futureWithoutCodeur = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "100", // Taille du message
+                            "-mess", "5000", // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
@@ -89,7 +89,7 @@ public class SimulateurTEB {
                     // Simulations with the codeur
                     Future<SimulationResult> futureWithCodeur = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "1000", // Taille du message
+                            "-mess", "5000", // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
@@ -163,8 +163,8 @@ public class SimulateurTEB {
             System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ, avec et sans codeur");
 
             // Valeurs de SNR à tester
-            double snrMin = -15.0;
-            double snrMax = 10.0;
+            double snrMin = -10.0;
+            double snrMax = 20.0;
             double pasSNR = 1;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque SNR
