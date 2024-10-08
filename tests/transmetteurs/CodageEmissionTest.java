@@ -103,4 +103,12 @@ public class CodageEmissionTest {
         assertEquals(expectedInformation, mockDestination1.getInformationRecue());
         assertEquals(expectedInformation, mockDestination2.getInformationRecue());
     }
+
+    /**
+     * Tes de la methode main
+     */
+    @Test
+    public void testMain() {
+        CodageEmission.main(new String[]{});
+    }
 }

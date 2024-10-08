@@ -81,11 +81,12 @@ public class CodageEmission extends Transmetteur<Boolean, Boolean> {
 
             // Get and print the received information from the destination
             Information<Boolean> informationRecue = destination.getInformationRecue();
-            System.out.println("Message encodé reçu par la destination :");
+            //System.out.println("Message encodé reçu par la destination :");
             for (Boolean bit : informationRecue) {
-                System.out.print(bit ? "1" : "0");
+                bit = bit == null ? false : bit;
+                //System.out.print(bit ? "1" : "0");
             }
-            System.out.println();  // New line after the message
+            //System.out.println();  // New line after the message
             
         } catch (InformationNonConformeException e) {
             System.err.println("Erreur lors de l'émission ou la réception de l'information : " + e.getMessage());

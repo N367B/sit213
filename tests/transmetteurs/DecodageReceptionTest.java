@@ -89,4 +89,12 @@ public class DecodageReceptionTest {
         information.add(true);   // 1
         decodageReception.recevoir(information); // Devrait lever une exception
     }
+
+    // Test de la methode main
+    @Test
+    public void testMain() {
+        // Test de la méthode main
+        DecodageReception.main(new String[]{});
+
+    }
 }

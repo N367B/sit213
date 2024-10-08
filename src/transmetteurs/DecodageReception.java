@@ -113,11 +113,11 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
 			{true, true, true}      // "111"
 		};
 	
-		System.out.println("Testing all possible 3-bit sequences:");
+		//System.out.println("Testing all possible 3-bit sequences:");
 		for (boolean[] input : testInputs) {
 			boolean result = DecodageReception.automate(input);
-			System.out.println("Input: " + (input[0] ? "1" : "0") + (input[1] ? "1" : "0") + (input[2] ? "1" : "0") + 
-							   " -> Output: " + (result ? "1" : "0"));
+			//System.out.println("Input: " + (input[0] ? "1" : "0") + (input[1] ? "1" : "0") + (input[2] ? "1" : "0") + 
+			//				   " -> Output: " + (result ? "1" : "0"));
 		}
 	}
 	
