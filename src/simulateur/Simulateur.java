@@ -289,6 +289,13 @@ public class Simulateur {
      * <dt> -mess m  </dt><dd> m (int) constitué de 1 à 6 digits, le nombre de bits du message "aléatoire" à transmettre</dd> 
      * <dt> -s </dt><dd> pour demander l'utilisation des sondes d'affichage</dd>
      * <dt> -seed v </dt><dd> v (int) d'initialisation pour les générateurs aléatoires</dd> 
+     * <dt> -form f </dt><dd> f (String) NRZ, NRZT, RZ, le format de modulation pour le signal analogique</dd>
+     * <dt> -nbEch n </dt><dd> n (int) le nombre d'échantillons par bit</dd>
+     * <dt> -ampl min max </dt><dd> min, max (float) les amplitudes min et max pour la représentation d'un bit</dd>
+     * <dt> -snrpb v </dt><dd> v (float) le SNR par bit en dB</dd>
+     * <dt> -snr v </dt><dd> v (float) le SNR en dB</dd>
+     * <dt> -ti d1 a1 ... dn an </dt><dd> d1, a1, ..., dn, an (int, float) les délais et atténuations des trajets indirects</dd>
+     * <dt> -codeur </dt><dd> pour activer le codeur</dd>
      * </dl>
      *
      * @throws ArgumentsException si un des arguments est incorrect.
