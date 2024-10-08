@@ -28,8 +28,7 @@ public class SimulateurTEB {
     }
 
     /**
-     * Méthode pour générer la courbe de TEB en fonction du SNR.
-     * À chaque valeur de SNR, la simulation est exécutée plusieurs fois et l'on calcule la moyenne des TEB.
+     * Méthode pour générer la courbe de TEB en fonction du SNR, avec et sans codeur.
      * @param snrMin Le SNR minimum à tester.
      * @param snrMax Le SNR maximum à tester.
      * @param pasSNR Le pas entre les valeurs de SNR.
@@ -37,7 +36,8 @@ public class SimulateurTEB {
      * @throws Exception Si une erreur survient pendant la simulation.
      */
     public void genererCourbeTEB(double snrMin, double snrMax, double pasSNR, String fichierCSV) throws Exception {
-        List<Float> tebValues = new ArrayList<>();
+        List<Float> tebValuesWithoutCodeur = new ArrayList<>();
+        List<Float> tebValuesWithCodeur = new ArrayList<>();
         List<Double> snrValues = new ArrayList<>();
         
         // Thread pool with a fixed number of threads based on available processors
@@ -45,12 +45,12 @@ public class SimulateurTEB {
         ExecutorService executorService = Executors.newFixedThreadPool(availableThreads);
         
         // Calculate total simulations for progress tracking
-        int totalSimulations = nbSimulations * (((int) ((snrMax - snrMin) / pasSNR)) + 1);
+        int totalSimulations = nbSimulations * (((int) ((snrMax - snrMin) / pasSNR)) + 1) * 2; // x2 for with and without codeur
         completedSimulations.set(0); // Reset the completed simulations count
 
         // Ouverture du fichier CSV pour écrire les résultats
         try (FileWriter writer = new FileWriter(fichierCSV)) {
-            writer.write("Modulation,SNR(dB),TEB\n"); // En-tête du fichier CSV
+            writer.write("Modulation,SNR(dB),TEB Without Codeur,TEB With Codeur\n"); // En-tête du fichier CSV
 
             // Boucle sur les valeurs de SNR
             List<Future<SimulationResult>> futures = new ArrayList<>();
@@ -61,20 +61,16 @@ public class SimulateurTEB {
                     final int simIndex = simulation;
                     final double currentSnr = snr;
                     
-                    // Soumettre la simulation à l'executorService
-                    Future<SimulationResult> future = executorService.submit(() -> {
+                    // Simulations without the codeur
+                    Future<SimulationResult> futureWithoutCodeur = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "500", // Taille du message
+                            "-mess", "100", // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
                             "-ampl", "-1.0", "1.0", // Amplitude
                             "-snrpb", String.valueOf(currentSnr) // SNR par bit
                         });
-                        
-                        if (affichage) {
-                            System.out.println("Simulation " + (simIndex + 1) + " pour modulation " + typeModulation + " avec SNR = " + currentSnr + " dB");
-                        }
                         
                         // Exécuter la simulation
                         simulateur.execute();
@@ -88,22 +84,51 @@ public class SimulateurTEB {
                         return new SimulationResult(currentSnr, teb, simIndex);
                     });
                     
-                    futures.add(future);
+                    futures.add(futureWithoutCodeur);
+
+                    // Simulations with the codeur
+                    Future<SimulationResult> futureWithCodeur = executorService.submit(() -> {
+                        Simulateur simulateur = new Simulateur(new String[] {
+                            "-mess", "500", // Taille du message
+                            "-form", typeModulation, // Type de modulation
+                            "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
+                            "-nbEch", "30", // Nombre d'échantillons par bit
+                            "-ampl", "-1.0", "1.0", // Amplitude
+                            "-snrpb", String.valueOf(currentSnr), // SNR par bit
+                            "-codeur" // Activer le codeur
+                        });
+                        
+                        // Exécuter la simulation
+                        simulateur.execute();
+                        
+                        // Calculer le TEB pour cette simulation
+                        float teb = simulateur.calculTauxErreurBinaire();
+
+                        // Update the progress bar
+                        updateProgressBar(totalSimulations);
+
+                        return new SimulationResult(currentSnr, teb, simIndex);
+                    });
+
+                    futures.add(futureWithCodeur);
                 }
             }
             
             // Récupérer les résultats des simulations
-            for (Future<SimulationResult> future : futures) {
-                SimulationResult result = future.get(); // Bloque jusqu'à ce que le résultat soit disponible
-                tebValues.add(result.teb);
-                snrValues.add(result.snr);
+            for (int i = 0; i < futures.size(); i += 2) {
+                SimulationResult resultWithoutCodeur = futures.get(i).get();   // Sans codeur
+                SimulationResult resultWithCodeur = futures.get(i + 1).get(); // Avec codeur
+                
+                tebValuesWithoutCodeur.add(resultWithoutCodeur.teb);
+                tebValuesWithCodeur.add(resultWithCodeur.teb);
+                snrValues.add(resultWithoutCodeur.snr);
                 
                 if (affichage) {
-                    System.out.println("Modulation: " + typeModulation + ", SNR: " + result.snr + " dB, TEB Moyenne: " + result.teb);
+                    System.out.println("Modulation: " + typeModulation + ", SNR: " + resultWithoutCodeur.snr + " dB, TEB Sans Codeur: " + resultWithoutCodeur.teb + ", TEB Avec Codeur: " + resultWithCodeur.teb);
                 }
                 
                 // Écriture dans le fichier CSV
-                writer.write(typeModulation + "," + result.snr + "," + result.teb + "\n");
+                writer.write(typeModulation + "," + resultWithoutCodeur.snr + "," + resultWithoutCodeur.teb + "," + resultWithCodeur.teb + "\n");
             }
             
             if (affichage) {
@@ -135,12 +160,12 @@ public class SimulateurTEB {
      */
     public static void main(String[] args) {
         try {
-            System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ");
+            System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ, avec et sans codeur");
 
             // Valeurs de SNR à tester
-            double snrMin = -45.0;
+            double snrMin = -15.0;
             double snrMax = 10.0;
-            double pasSNR = 0.1;
+            double pasSNR = 1;
 
             int nbSimulations = 10; // Nombre de simulations pour chaque SNR
 
