@@ -534,4 +534,8 @@ public class SimulateurTest {
         assertEquals("TEB should match the theoretical value for complex multi-path within a margin", expectedTheoreticalTEB, calculatedTEB, margin);
     }
 
+
+    /**
+     * TODO : ADD SIMILAR TESTS FOR THE CODEUR AND DECODEUR.
+     */
 }
