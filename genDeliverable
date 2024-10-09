@@ -1,5 +1,5 @@
 #!/bin/bash
-ETAPE=4
+ETAPE=5
 
 # Noms des auteurs
 NOM1="BODIN"
