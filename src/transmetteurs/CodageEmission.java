@@ -59,6 +59,10 @@ public class CodageEmission extends Transmetteur<Boolean, Boolean> {
 	        informationEmise = informationBitCode; 
 	}
     
+    /**
+     * Main de la classe CodageEmission
+     * @param args les arguments de la ligne de commande
+     */
     public static void main(String[] args) {
         try {
             // Create a fixed source with a simple message (e.g., "101")

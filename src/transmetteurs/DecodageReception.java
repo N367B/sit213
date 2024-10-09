@@ -28,7 +28,7 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
 
     /**
      * automate pour trouver si c'est un true ou un false
-     * @param bits
+     * @param bits tableau de bits
      * @return true ou false
      */
 	public static boolean automate(boolean[] bits) {
@@ -100,6 +100,10 @@ public class DecodageReception extends Transmetteur<Boolean, Boolean> {
         informationEmise = informationBitCode;
     }
 
+    /**
+     * Main method to test the automate
+     * @param args the command line arguments
+     */
 	public static void main(String[] args) {
 		// Test all possible 3-bit inputs for the automate
 		boolean[][] testInputs = {
