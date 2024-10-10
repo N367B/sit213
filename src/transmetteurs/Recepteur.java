@@ -55,7 +55,6 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      */
     @Override
     public void recevoir(Information<Float> information) throws InformationNonConformeException {
-    	//System.out.println("Signal Analogique Reçu: " + this.informationRecue);
         if (information == null) {
             throw new InformationNonConformeException("L'information reçue est nulle.");
         }
@@ -74,7 +73,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
         }
 
         Information<Boolean> informationLogique = new Information<>();
-    	//System.out.println("Type de Modulation: " + typeModulation);
+
         // Conversion en fonction du type de modulation
         switch (typeModulation) {
             case "NRZ":
@@ -104,10 +103,11 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
         for (int i = 0; i < informationRecue.nbElements(); i += nbEchantillonsParBit) {
             float moyenne = 0;
             // Moyenne des échantillons pour déterminer s'il s'agit d'un '1' ou '0'
-            for (int j = 0; j < nbEchantillonsParBit; j++) {
+            int limit = Math.min(nbEchantillonsParBit, informationRecue.nbElements() - i);
+            for (int j = 0; j < limit; j++) {
                 moyenne += informationRecue.iemeElement(i + j);
             }
-            moyenne /= nbEchantillonsParBit;
+            moyenne /= limit;
             informationLogique.add(moyenne >= (Amax + Amin) / 2);
         }
     }
@@ -116,13 +116,23 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      * Convertit un signal analogique en signal logique selon la modulation NRZT.
      */
     private void convertNRZT(Information<Boolean> informationLogique) throws InformationNonConformeException {
-        for (int i = 0; i < informationRecue.nbElements(); i += nbEchantillonsParBit) {
+        int nbEchPremierTiers = nbEchantillonsParBit / 3;
+        int nbEchDeuxiemeTiers = nbEchantillonsParBit / 3;
+        int nbEchTroisiemeTiers = nbEchantillonsParBit - nbEchPremierTiers - nbEchDeuxiemeTiers;
+
+        int totalEchParBit = nbEchPremierTiers + nbEchDeuxiemeTiers + nbEchTroisiemeTiers;
+
+        for (int i = 0; i < informationRecue.nbElements(); i += totalEchParBit) {
             float moyenne = 0;
-            // Moyenne des échantillons pour déterminer s'il s'agit d'un '1' ou '0'
-            for (int j = nbEchantillonsParBit / 3; j < 2 * nbEchantillonsParBit / 3; j++) {
-                moyenne += informationRecue.iemeElement(i + j);
+            int start = i + nbEchPremierTiers;
+            int end = Math.min(start + nbEchDeuxiemeTiers, informationRecue.nbElements());
+
+            // Moyenne des échantillons du deuxième segment
+            int count = end - start;
+            for (int j = start; j < end; j++) {
+                moyenne += informationRecue.iemeElement(j);
             }
-            moyenne /= (nbEchantillonsParBit / 3);
+            moyenne /= count > 0 ? count : 1;
             informationLogique.add(moyenne >= (Amax + Amin) / 2);
         }
     }
@@ -132,52 +142,58 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      * @param informationLogique L'information logique à émettre.
      */
     private void convertRZ(Information<Boolean> informationLogique) throws InformationNonConformeException {
-    	Amin = 0.0f;
-        for (int i = 0; i < informationRecue.nbElements(); i += nbEchantillonsParBit) {
+        int nbEchPremierTiers = nbEchantillonsParBit / 3;
+        int nbEchDeuxiemeTiers = nbEchantillonsParBit / 3;
+        int nbEchTroisiemeTiers = nbEchantillonsParBit - nbEchPremierTiers - nbEchDeuxiemeTiers;
+
+        int totalEchParBit = nbEchPremierTiers + nbEchDeuxiemeTiers + nbEchTroisiemeTiers;
+
+        for (int i = 0; i < informationRecue.nbElements(); i += totalEchParBit) {
             float moyenne = 0;
-            // Moyenne des échantillons du deuxième tiers pour déterminer s'il s'agit d'un '1' ou '0'
-            for (int j = nbEchantillonsParBit / 3; j < 2 * nbEchantillonsParBit / 3; j++) {
-                moyenne += informationRecue.iemeElement(i + j);
+            int start = i + nbEchPremierTiers;
+            int end = Math.min(start + nbEchDeuxiemeTiers, informationRecue.nbElements());
+
+            // Moyenne des échantillons du deuxième segment
+            int count = end - start;
+            for (int j = start; j < end; j++) {
+                moyenne += informationRecue.iemeElement(j);
             }
-            moyenne /= (nbEchantillonsParBit / 3);
+            moyenne /= count > 0 ? count : 1;
             informationLogique.add(moyenne >= (Amax + Amin) / 2);
         }
     }
 
-	/**
-	 * Fonction principale pour tester le récepteur avec la modulation RZ.
-	 * @param args Les arguments de la ligne de commande.
-	 * 
-	 */
+    /**
+     * Fonction principale pour tester le récepteur avec les différentes modulations.
+     * @param args Les arguments de la ligne de commande.
+     */
     public static void main(String[] args) {
         try {
-            // Définir les paramètres de la modulation RZ
-            String typeModulation = "RZ";
+            // Définir les paramètres
             float Amax = 1.0f;
-            float Amin = -1.0f;
-            int nbEchantillonsParBit = 30;
-            
+            float Amin = 0.0f;
+            int nbEchantillonsParBit = 31; // Par exemple, un nombre non divisible par 3
+            String typeModulation = "NRZT"; // Vous pouvez tester avec "NRZ", "NRZT", "RZ"
+
             // Créer un message fixe (message logique)
             SourceFixe source = new SourceFixe("01111000101100");
             Information<Boolean> infoLogique = source.getInformationGeneree();
-            //System.out.println("Message logique émis : " + infoLogique);
 
             // Convertir le message logique en signal analogique avec l'émetteur
             Emetteur emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             emetteur.connecter(new SondeAnalogique("Signal Analogique émis"));
             emetteur.recevoir(infoLogique);
             Information<Float> infoAnalogique = emetteur.getInformationEmise();
-            //System.out.println("Signal analogique émis : " + infoAnalogique);
 
-            // Créer le récepteur pour la modulation RZ
-            Recepteur recepteur = new Recepteur(Amax, Amin, nbEchantillonsParBit, typeModulation);
+            // Créer le récepteur pour la modulation choisie
+            Recepteur recepteur = new Recepteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
             recepteur.connecter(new SondeLogique("Signal Logique reçu", 200));
-            
+
             // Recevoir le signal analogique et le convertir en message logique
             recepteur.recevoir(infoAnalogique);
 
             // Afficher le message logique reçu
-            //Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
+            Information<Boolean> infoLogiqueRecue = recepteur.getInformationEmise();
             //System.out.println("Message logique reçu : " + infoLogiqueRecue);
 
         } catch (InformationNonConformeException e) {

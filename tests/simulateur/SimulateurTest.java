@@ -19,7 +19,7 @@ public class SimulateurTest {
      */
     @Test
     public void testAnalyseArgumentsWithSeedLogical() throws ArgumentsException {
-        String[] args = {"-mess", "100", "-seed", "123", "-s"};
+        String[] args = {"-mess", "100", "-seed", "123"};
         simulateur = new Simulateur(args);
 
         assertTrue(simulateur.isMessageAleatoire());  // Random message
@@ -41,7 +41,7 @@ public class SimulateurTest {
      */
     @Test
     public void testSimulationExecutionWithRandomMessageLogical() throws Exception {
-        String[] args = {"-mess", "100", "-seed", "123", "-s"};  // Random message of 100 bits with seed
+        String[] args = {"-mess", "100", "-seed", "123"};  // Random message of 100 bits with seed
         simulateur = new Simulateur(args);
 
         simulateur.execute();  // Should execute without errors
@@ -139,7 +139,7 @@ public class SimulateurTest {
      */
     @Test
     public void testSimulationExecutionWithSondes() throws Exception {
-        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-s"};  // Active les sondes
+        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0"};  // Active les sondes
         simulateur = new Simulateur(args);
         
         simulateur.execute();  // Devrait exécuter le code avec les sondes connectées
@@ -350,7 +350,7 @@ public class SimulateurTest {
      */
     @Test
     public void testSimulationWithSondesAndMultiPath() throws Exception {
-        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-s", "-ti", "3", "0.5", "5", "0.2"};
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2"};
         simulateur = new Simulateur(args);
 
         simulateur.execute();  // Should execute with sondes without errors
@@ -385,7 +385,7 @@ public class SimulateurTest {
 
     @Test
     public void testSimulationAnalogiqueBruiteWithSondes() throws Exception {
-        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", "10", "-s"};
+        String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", "10"};
         simulateur = new Simulateur(args);
 
         simulateur.execute();  // Should execute with sondes without errors
@@ -396,7 +396,7 @@ public class SimulateurTest {
 
     @Test
     public void testSimulationMultiTrajetWithSondes() throws Exception {
-        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2", "-s"};
+        String[] args = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2"};
         simulateur = new Simulateur(args);
 
         simulateur.execute();  // Should execute with sondes without errors
@@ -404,7 +404,7 @@ public class SimulateurTest {
         assertNotNull(simulateur.getSource().getInformationEmise());
         assertNotNull(simulateur.getDestination().getInformationRecue());
         
-        String[] args1 = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2", "-s", "-snr", "10"};
+        String[] args1 = {"-mess", "101", "-form", "RZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-ti", "3", "0.5", "5", "0.2", "-snr", "10"};
         simulateur = new Simulateur(args1);
 
         simulateur.execute();  // Should execute with sondes without errors
