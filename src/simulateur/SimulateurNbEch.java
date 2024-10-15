@@ -67,7 +67,7 @@ public class SimulateurNbEch {
 
                     Future<SimulationResult> future = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[]{
-                                "-mess", "1000",
+                                "-mess", "2000",
                                 "-form", typeModulation,
                                 "-seed", String.valueOf(simIndex + 1),
                                 "-nbEch", String.valueOf(currentNbEch),
@@ -137,8 +137,8 @@ public class SimulateurNbEch {
 
             // Valeurs de nbEch à tester
             int nbEchMin = 5;
-            int nbEchMax = 250;
-            int pasNbEch = 5;
+            int nbEchMax = 380;
+            int pasNbEch = 15;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque nbEch
             double snrpb = 15; // SNR par bit en dB
