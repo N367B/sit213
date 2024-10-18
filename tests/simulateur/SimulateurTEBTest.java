@@ -22,9 +22,9 @@ public class SimulateurTEBTest {
     @Test
     public void testGenererCourbeTEB_NRZ() throws Exception {
         String csvFilePath = "test_results_NRZ.csv";
-        double snrMin = -10.0;
-        double snrMax = 10.0;
-        double pasSNR = 5.0;
+        Double snrMin = -10.0;
+        Double snrMax = 10.0;
+        Double pasSNR = 5.0;
 
         // Generate TEB curve for NRZ and write to a test CSV file
         simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
@@ -41,9 +41,9 @@ public class SimulateurTEBTest {
     @Test
     public void testGenererCourbeTEB_NRZT() throws Exception {
         String csvFilePath = "test_results_NRZT.csv";
-        double snrMin = -10.0;
-        double snrMax = 10.0;
-        double pasSNR = 5.0;
+        Double snrMin = -10.0;
+        Double snrMax = 10.0;
+        Double pasSNR = 5.0;
 
         // Generate TEB curve for NRZT and write to a test CSV file
         simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
@@ -59,9 +59,9 @@ public class SimulateurTEBTest {
     @Test
     public void testGenererCourbeTEB_RZ() throws Exception {
         String csvFilePath = "test_results_RZ.csv";
-        double snrMin = -10.0;
-        double snrMax = 10.0;
-        double pasSNR = 5.0;
+        Double snrMin = -10.0;
+        Double snrMax = 10.0;
+        Double pasSNR = 5.0;
 
         // Generate TEB curve for RZ and write to a test CSV file
         simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
@@ -77,9 +77,9 @@ public class SimulateurTEBTest {
     @Test
     public void testSimulationsWithDifferentSNR() throws Exception {
         String csvFilePath = "test_results_NRZ_varying_snr.csv";
-        double snrMin = -20.0;
-        double snrMax = 20.0;
-        double pasSNR = 10.0;
+        Double snrMin = -20.0;
+        Double snrMax = 20.0;
+        Double pasSNR = 10.0;
 
         // Generate TEB curve with varying SNR for NRZ and write to a test CSV file
         simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
@@ -96,9 +96,9 @@ public class SimulateurTEBTest {
     @Test
     public void testSimulationsForMultipleRuns() throws Exception {
         String csvFilePath = "test_results_multiple_runs.csv";
-        double snrMin = 0.0;
-        double snrMax = 10.0;
-        double pasSNR = 5.0;
+        Double snrMin = 0.0;
+        Double snrMax = 10.0;
+        Double pasSNR = 5.0;
 
         // Generate TEB curve for multiple runs and ensure the average is calculated
         simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
@@ -115,9 +115,9 @@ public class SimulateurTEBTest {
     @Test
     public void testEdgeCases() throws Exception {
         String csvFilePath = "test_results_edge_cases.csv";
-        double snrMin = -50.0;
-        double snrMax = 50.0;
-        double pasSNR = 20.0;
+        Double snrMin = -50.0;
+        Double snrMax = 50.0;
+        Double pasSNR = 20.0;
 
         simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 

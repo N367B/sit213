@@ -35,7 +35,7 @@ public class SimulateurTEB {
      * @param fichierCSV Le fichier dans lequel écrire les résultats.
      * @throws Exception Si une erreur survient pendant la simulation.
      */
-    public void genererCourbeTEB(double snrMin, double snrMax, double pasSNR, String fichierCSV, int mess) throws Exception {
+    public void genererCourbeTEB(Double snrMin, Double snrMax, Double pasSNR, String fichierCSV, int mess) throws Exception {
         List<Float> tebValuesWithoutCodeur = new ArrayList<>();
         List<Float> tebValuesWithCodeur = new ArrayList<>();
         List<Double> snrValues = new ArrayList<>();
@@ -54,12 +54,12 @@ public class SimulateurTEB {
 
             // Boucle sur les valeurs de SNR
             List<Future<SimulationResult>> futures = new ArrayList<>();
-            for (double snr = snrMin; snr <= snrMax; snr += pasSNR) {
+            for (Double snr = snrMin; snr <= snrMax; snr += pasSNR) {
                 
                 // Pour chaque SNR, on soumet les simulations au thread pool
                 for (int simulation = 0; simulation < nbSimulations; simulation++) {
                     final int simIndex = simulation;
-                    final double currentSnr = snr;
+                    final Double currentSnr = snr;
                     
                     // Simulations without the codeur
                     Future<SimulationResult> futureWithoutCodeur = executorService.submit(() -> {
@@ -163,10 +163,10 @@ public class SimulateurTEB {
             System.out.println("Simulation de la chaîne de transmission avec différents SNR pour les modulations NRZ, NRZT et RZ, avec et sans codeur");
 
             // Valeurs de SNR à tester
-            double snrMin = -10.0;
-            double snrMax = 20.0;
-            double pasSNR = 1;
-            int mess = 500;
+            Double snrMin = -10.0;
+            Double snrMax = 20.0;
+            Double pasSNR = 0.1;
+            int mess = 200000;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque SNR
 
@@ -176,8 +176,11 @@ public class SimulateurTEB {
             SimulateurTEB simTEBRZ = new SimulateurTEB("RZ", nbSimulations);
 
             // Générer les courbes TEB pour chaque modulation et enregistrer dans des fichiers CSV
+            System.out.println("Simulations 1/3...");
             simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZ.csv", mess);
+            System.out.println("\nSimulations 2/3...");
             simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZT.csv", mess);
+            System.out.println("\nSimulations 3/3...");
             simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_RZ.csv", mess);
 
             System.out.println("Fin de la simulation de la chaîne de transmission");
@@ -189,11 +192,11 @@ public class SimulateurTEB {
 
     // Classe pour encapsuler le résultat d'une simulation
     private static class SimulationResult {
-        double snr;
+        Double snr;
         float teb;
         int simulationIndex;
 
-        public SimulationResult(double snr, float teb, int simulationIndex) {
+        public SimulationResult(Double snr, float teb, int simulationIndex) {
             this.snr = snr;
             this.teb = teb;
             this.simulationIndex = simulationIndex;

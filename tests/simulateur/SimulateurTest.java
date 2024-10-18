@@ -223,7 +223,7 @@ public class SimulateurTest {
      */
     @Test
     public void testMultipleRunsWithVaryingSNR() throws Exception {
-        for (double snr = -5.0; snr <= -20.0; snr -= 5.0) {
+        for (Double snr = -5.0; snr <= -20.0; snr -= 5.0) {
             String[] args = {"-mess", "101", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snrpb", String.valueOf(snr)};
             simulateur = new Simulateur(args);
 
@@ -424,11 +424,11 @@ public class SimulateurTest {
 
     @Test
     public void testTEBWithDifferentSNRLevels() throws Exception {
-        double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
+        Double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
         float previousTeb = 1.0f;
         float margin = 0.05f;  // Allowable margin for TEB comparison
     
-        for (double snr : snrLevels) {
+        for (Double snr : snrLevels) {
             String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", String.valueOf(snr)};
             simulateur = new Simulateur(args);
     
@@ -443,11 +443,11 @@ public class SimulateurTest {
     
     @Test
     public void testTEBWithDifferentSNRPBLevels() throws Exception {
-        double[] snrpbLevels = {-10.0, -5.0, 0.1, 5.0, 10.0};  // Different SNRPB levels to test
+        Double[] snrpbLevels = {-10.0, -5.0, 0.1, 5.0, 10.0};  // Different SNRPB levels to test
         float previousTeb = 1.0f;
         float margin = 0.05f;  // Allowable margin for TEB comparison
     
-        for (double snrpb : snrpbLevels) {
+        for (Double snrpb : snrpbLevels) {
             String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snrpb", String.valueOf(snrpb)};
             simulateur = new Simulateur(args);
     
@@ -462,11 +462,11 @@ public class SimulateurTest {
     
     @Test
     public void testTEBWithMultiPathAndSNR() throws Exception {
-        double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
+        Double[] snrLevels = {-20.0, -10.0, -5.0, 0.1, 10.0};  // Different SNR levels to test
         float previousTeb = 1.0f;
         float margin = 0.05f;  // Allowable margin for TEB comparison
     
-        for (double snr : snrLevels) {
+        for (Double snr : snrLevels) {
             String[] args = {"-mess", "300", "-form", "NRZ", "-nbEch", "30", "-ampl", "0.0", "1.0", "-snr", String.valueOf(snr), "-ti", "3", "0.5", "5", "0.2"};
             simulateur = new Simulateur(args);
     
@@ -484,7 +484,7 @@ public class SimulateurTest {
      */
     @Test
     public void testCalculatedTEBMatchesTheoreticalTEBWithSNR() throws Exception {
-        double snr = -10.0;
+        Double snr = -10.0;
         float expectedTheoreticalTEB = 0.12f; 
         float margin = 0.05f;
         String[] args = {"-mess", "300", "-snr", String.valueOf(snr)};
@@ -502,7 +502,7 @@ public class SimulateurTest {
      */
     @Test
     public void testCalculatedTEBMatchesTheoreticalTEBWithSNRPB() throws Exception {
-        double snrpb = 5.0;
+        Double snrpb = 5.0;
         float expectedTheoreticalTEB = 0.03f;
         float margin = 0.04f;
 

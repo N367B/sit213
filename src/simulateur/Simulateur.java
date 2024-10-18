@@ -73,10 +73,10 @@ public class Simulateur {
     private int nbEchantillonsParBit = 30;
     
     /** Le SNR par bit en dB */
-    private double snrParBit = 0;
+    private Double snrParBit = null;
 
     /** Le SNR en dB */
-    private double snr = 0;
+    private Double snr = null;
 
     /** Les trajets indirects pour le transmetteur analogique à trajets multiples */
     private List<float[]> trajetsIndirects = new ArrayList<>();
@@ -123,13 +123,13 @@ public class Simulateur {
         if (defautLogique) {
             //System.out.println("Simulateur logique parfait");
             simulateurLogiqueParfait();
-            } else if (snrParBit == 0 && snr == 0 && trajetsIndirects.isEmpty()) {
+            } else if (snrParBit == null && snr == null && trajetsIndirects.isEmpty()) {
                 //System.out.println("Simulateur analogique parfait");
                 simulateurAnalogiqueParfait();
             } else if (!trajetsIndirects.isEmpty()) {
                 //System.out.println("Simulateur multi-trajet");
                 simulateurMultiTrajet();
-            } else if (snrParBit != 0 || snr != 0) {
+            } else if (snrParBit != null || snr != null) {
                 //System.out.println("Simulateur analogique bruité");
                 simulateurAnalogiqueBruite();
             } else {
@@ -194,7 +194,7 @@ public class Simulateur {
 	
 	private void simulateurAnalogiqueBruite() {
 	    // Calculate the SNR from Eb/N0
-        if (snr == 0){
+        if (snr == null){
 	        snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
         }
 	    emetteur = new Emetteur(Amin, Amax, nbEchantillonsParBit, typeModulation);
@@ -239,8 +239,8 @@ public class Simulateur {
         TransmetteurAnalogiqueMultiTrajet transmetteurAnalogiqueMultiTrajet = new TransmetteurAnalogiqueMultiTrajet(trajetsIndirects);
         emetteur.connecter(transmetteurAnalogiqueMultiTrajet);
 
-        if (snr != 0 || snrParBit != 0) {
-            if (snr == 0){
+        if (snr != null || snrParBit != null) {
+            if (snr == null){
                 snr = snrParBit - 10 * Math.log10(nbEchantillonsParBit / 2.0); // Convert Eb/N0 to SNR
             }
             //System.out.println("SNR utilisé dans la simulation : " + snr);
@@ -361,7 +361,7 @@ public class Simulateur {
             } else if (args[i].matches("-snrpb")) {
                 i++;
                 defautLogique = false;
-                if (snr != 0) {
+                if (snr != null) {
                     throw new ArgumentsException("Vous ne pouvez pas spécifier à la fois -snrpb et -snr.");
                 }
                 try {
@@ -372,7 +372,7 @@ public class Simulateur {
             } else if (args[i].matches("-snr")){
                 i++;
                 defautLogique = false;
-                if (snrParBit != 0) {
+                if (snrParBit != null) {
                     throw new ArgumentsException("Vous ne pouvez pas spécifier à la fois -snrpb et -snr.");
                 }
                 try {
@@ -475,7 +475,7 @@ public class Simulateur {
     * Setter pour snrParBit
     * @param snrParBit le SNR par bit en dB
     */
-	public void setSnrParBit(double snrParBit) {
+	public void setSnrParBit(Double snrParBit) {
 		this.snrParBit = snrParBit;
 	}
 	
@@ -483,7 +483,7 @@ public class Simulateur {
 	 * Getter pour snrParBit
      * @return le SNR par bit en dB
 	 */
-	public double getSnrParBit() {
+	public Double getSnrParBit() {
 		return snrParBit;
 	}
 

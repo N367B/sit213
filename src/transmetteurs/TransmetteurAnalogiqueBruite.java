@@ -18,7 +18,7 @@ import java.util.Collections;
  */
 public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
 
-    private double snr; // Rapport signal/bruit (en dB)
+    private Double snr; // Rapport signal/bruit (en dB)
     private Random random; // Générateur de nombres aléatoires
     private int nbEchantillonsParBit; // Nombre d'échantillons par bit
     /** Liste pour stocker les valeurs du bruit */
@@ -30,7 +30,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
      * @param snr Le rapport signal/bruit (en dB).
      * @param nbEchant Le nombre d'échantillons par bit.
      */
-    public TransmetteurAnalogiqueBruite(double snr, int nbEchant) {
+    public TransmetteurAnalogiqueBruite(Double snr, int nbEchant) {
         super();
         this.snr = snr;
         this.nbEchantillonsParBit = nbEchant;
@@ -55,11 +55,11 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
         this.informationEmise = informationBruitee;
 
         // Calculer la puissance du signal bruité et du bruit après ajout
-        double puissanceSignal = calculerPuissanceSignal(information); // Original signal power
-        double puissanceBruit = calculerPuissanceBruit(information, informationBruitee); // Noise power
-        double sigma = Math.sqrt(puissanceBruit); // Écart-type du bruit
-        double rapportSNR = 10 * Math.log10(puissanceSignal / puissanceBruit); // Rapport S/N en dB
-        double rapportEbN0 = rapportSNR + 10 * Math.log10(nbEchantillonsParBit / 2.0); // Eb/N0 en dB
+        Double puissanceSignal = calculerPuissanceSignal(information); // Original signal power
+        Double puissanceBruit = calculerPuissanceBruit(information, informationBruitee); // Noise power
+        Double sigma = Math.sqrt(puissanceBruit); // Écart-type du bruit
+        Double rapportSNR = 10 * Math.log10(puissanceSignal / puissanceBruit); // Rapport S/N en dB
+        Double rapportEbN0 = rapportSNR + 10 * Math.log10(nbEchantillonsParBit / 2.0); // Eb/N0 en dB
         
         // Affichage des informations calculées après ajout du bruit
         if (afficherInformations) {
@@ -103,9 +103,9 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
      */
     public Information<Float> ajouterBruit(Information<Float> information) {
         Information<Float> informationBruitee = new Information<>();
-        double puissanceSignal = calculerPuissanceSignal(information);
-        double puissanceBruit = puissanceSignal / Math.pow(10, snr / 10); // Puissance du bruit calculée à partir du SNR
-        double sigma = Math.sqrt(puissanceBruit); // Écart-type du bruit
+        Double puissanceSignal = calculerPuissanceSignal(information);
+        Double puissanceBruit = puissanceSignal / Math.pow(10, snr / 10); // Puissance du bruit calculée à partir du SNR
+        Double sigma = Math.sqrt(puissanceBruit); // Écart-type du bruit
 
         for (int i = 0; i < information.nbElements(); i++) {
             float valeurOriginale = information.iemeElement(i);
@@ -127,8 +127,8 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
      * @param information L'information analogique.
      * @return La puissance moyenne du signal.
      */
-    public double calculerPuissanceSignal(Information<Float> information) {
-        double puissanceTotale = 0.0;
+    public Double calculerPuissanceSignal(Information<Float> information) {
+        Double puissanceTotale = 0.0;
         for (int i = 0; i < information.nbElements(); i++) {
             float valeur = information.iemeElement(i);
             puissanceTotale += valeur * valeur;
@@ -142,8 +142,8 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
      * @param signalBruite L'information analogique bruitée.
      * @return La puissance moyenne du bruit.
      */
-    public double calculerPuissanceBruit(Information<Float> signalOriginal, Information<Float> signalBruite) {
-        double puissanceTotaleBruit = 0.0;
+    public Double calculerPuissanceBruit(Information<Float> signalOriginal, Information<Float> signalBruite) {
+        Double puissanceTotaleBruit = 0.0;
         for (int i = 0; i < signalOriginal.nbElements(); i++) {
             float bruit = signalBruite.iemeElement(i) - signalOriginal.iemeElement(i);
             puissanceTotaleBruit += bruit * bruit;
@@ -183,7 +183,7 @@ public class TransmetteurAnalogiqueBruite extends Transmetteur<Float, Float> {
             float Amax = 1.0f;
             float Amin = 0.0f;
             int nbEchantillonsParBit = 30;
-            double snr = 10.0; // SNR en dB
+            Double snr = 10.0; // SNR en dB
 
             // Créer une source fixe
             SourceAleatoire source = new SourceAleatoire(100, 1);
