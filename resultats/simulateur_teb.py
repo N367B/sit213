@@ -1,3 +1,12 @@
+#
+#
+#
+# NE FONCTIONNE PAS CORRECTEMENT
+# IS NOT WORKING CORRECTLY
+#
+#
+#
+#
 import subprocess
 import re
 import csv
@@ -17,7 +26,7 @@ class SimulateurTEB:
         self.lock = Lock()  # For thread-safe progress update
         self.completed_simulations = 0
 
-    def run_simulation(self, mess, snr, use_codeur, nbEch=30):
+    def run_simulation(self, mess, snr, use_codeur, nbEch=30, ampl=[-1, 1]):
         """
         Runs a single simulation using the 'simulateur' executable and returns the TEB value.
 
@@ -27,7 +36,12 @@ class SimulateurTEB:
         :param nbEch: Number of samples per bit (int)
         :return: A tuple with the current SNR and the TEB value
         """
-        command = ['./simulateur', '-mess', str(mess), '-form', self.type_modulation, '-snrpb', str(snr), '-nbEch', str(nbEch)]
+        command = ['./simulateur', 
+                   '-ampl', str(ampl[0]), str(ampl[1]),
+                   '-mess', str(mess), 
+                   '-form', self.type_modulation, 
+                   '-snrpb', str(snr), 
+                   '-nbEch', str(nbEch)]
         if use_codeur:
             command.append('-codeur')
 

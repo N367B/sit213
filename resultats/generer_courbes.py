@@ -25,22 +25,22 @@ plt.figure(figsize=(10, 6))
 x_nrz = data_nrz['SNR(dB)'][last_points:-last_points]
 y_smooth_nrz_without = moving_average(data_nrz['TEB Without Codeur'], window_size=5)[last_points:-last_points]
 y_smooth_nrz_with = moving_average(data_nrz['TEB With Codeur'], window_size=5)[last_points:-last_points]
-plt.plot(x_nrz, y_smooth_nrz_without, label='NRZ (Sans Codeur)', color='blue', linestyle='--', marker='x')
-plt.plot(x_nrz, y_smooth_nrz_with, label='NRZ (Avec Codeur)', color='blue', linestyle='-', marker='x')
+plt.plot(x_nrz, y_smooth_nrz_without, label='NRZ (Sans Codeur)', color='blue', linestyle='--', marker='')
+plt.plot(x_nrz, y_smooth_nrz_with, label='NRZ (Avec Codeur)', color='blue', linestyle='-', marker='')
 
 # Plot NRZT with and without Codeur
 x_nrzt = data_nrzt['SNR(dB)'][last_points:-last_points]
 y_smooth_nrzt_without = moving_average(data_nrzt['TEB Without Codeur'], window_size=5)[last_points:-last_points]
 y_smooth_nrzt_with = moving_average(data_nrzt['TEB With Codeur'], window_size=5)[last_points:-last_points]
-plt.plot(x_nrzt, y_smooth_nrzt_without, label='NRZT (Sans Codeur)', color='green', linestyle='--', marker='x')
-plt.plot(x_nrzt, y_smooth_nrzt_with, label='NRZT (Avec Codeur)', color='green', linestyle='-', marker='x')
+plt.plot(x_nrzt, y_smooth_nrzt_without, label='NRZT (Sans Codeur)', color='green', linestyle='--', marker='')
+plt.plot(x_nrzt, y_smooth_nrzt_with, label='NRZT (Avec Codeur)', color='green', linestyle='-', marker='')
 
 # Plot RZ with and without Codeur
 x_rz = data_rz['SNR(dB)'][last_points:-last_points]
 y_smooth_rz_without = moving_average(data_rz['TEB Without Codeur'], window_size=5)[last_points:-last_points]
 y_smooth_rz_with = moving_average(data_rz['TEB With Codeur'], window_size=5)[last_points:-last_points]
-plt.plot(x_rz, y_smooth_rz_without, label='RZ (Sans Codeur)', color='red', linestyle='--', marker='x')
-plt.plot(x_rz, y_smooth_rz_with, label='RZ (Avec Codeur)', color='red', linestyle='-', marker='x')
+plt.plot(x_rz, y_smooth_rz_without, label='RZ (Sans Codeur)', color='red', linestyle='--', marker='')
+plt.plot(x_rz, y_smooth_rz_with, label='RZ (Avec Codeur)', color='red', linestyle='-', marker='')
 
 # Ajouter le titre et les labels des axes
 plt.title('TEB en fonction de Eb/N0 pour différentes modulations (Avec et Sans Codeur)')

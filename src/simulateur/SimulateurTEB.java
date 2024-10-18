@@ -166,7 +166,7 @@ public class SimulateurTEB {
             Double snrMin = -10.0;
             Double snrMax = 20.0;
             Double pasSNR = 0.1;
-            int mess = 999999;
+            int mess = 200000;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque SNR
 
@@ -176,8 +176,11 @@ public class SimulateurTEB {
             SimulateurTEB simTEBRZ = new SimulateurTEB("RZ", nbSimulations);
 
             // Générer les courbes TEB pour chaque modulation et enregistrer dans des fichiers CSV
+            System.out.println("Simulations 1/3...");
             simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZ.csv", mess);
+            System.out.println("\nSimulations 2/3...");
             simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZT.csv", mess);
+            System.out.println("\nSimulations 3/3...");
             simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_RZ.csv", mess);
 
             System.out.println("Fin de la simulation de la chaîne de transmission");

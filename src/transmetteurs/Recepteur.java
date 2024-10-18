@@ -116,6 +116,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      * Convertit un signal analogique en signal logique selon la modulation NRZT.
      */
     private void convertNRZT(Information<Boolean> informationLogique) throws InformationNonConformeException {
+        /*
         int nbEchPremierTiers = nbEchantillonsParBit / 3;
         int nbEchDeuxiemeTiers = nbEchantillonsParBit / 3;
         int nbEchTroisiemeTiers = nbEchantillonsParBit - nbEchPremierTiers - nbEchDeuxiemeTiers;
@@ -134,7 +135,8 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
             }
             moyenne /= count > 0 ? count : 1;
             informationLogique.add(moyenne >= (Amax + Amin) / 2);
-        }
+        }*/
+        convertNRZ(informationLogique);
     }
 
     /**
@@ -142,6 +144,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
      * @param informationLogique L'information logique à émettre.
      */
     private void convertRZ(Information<Boolean> informationLogique) throws InformationNonConformeException {
+        Amin = 0.0f;
         int nbEchPremierTiers = nbEchantillonsParBit / 3;
         int nbEchDeuxiemeTiers = nbEchantillonsParBit / 3;
         int nbEchTroisiemeTiers = nbEchantillonsParBit - nbEchPremierTiers - nbEchDeuxiemeTiers;
