@@ -35,7 +35,7 @@ public class SimulateurTEB {
      * @param fichierCSV Le fichier dans lequel écrire les résultats.
      * @throws Exception Si une erreur survient pendant la simulation.
      */
-    public void genererCourbeTEB(double snrMin, double snrMax, double pasSNR, String fichierCSV) throws Exception {
+    public void genererCourbeTEB(double snrMin, double snrMax, double pasSNR, String fichierCSV, int mess) throws Exception {
         List<Float> tebValuesWithoutCodeur = new ArrayList<>();
         List<Float> tebValuesWithCodeur = new ArrayList<>();
         List<Double> snrValues = new ArrayList<>();
@@ -64,7 +64,7 @@ public class SimulateurTEB {
                     // Simulations without the codeur
                     Future<SimulationResult> futureWithoutCodeur = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "5000", // Taille du message
+                            "-mess", String.valueOf(mess), // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
@@ -89,7 +89,7 @@ public class SimulateurTEB {
                     // Simulations with the codeur
                     Future<SimulationResult> futureWithCodeur = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[] {
-                            "-mess", "5000", // Taille du message
+                            "-mess", String.valueOf(mess), // Taille du message
                             "-form", typeModulation, // Type de modulation
                             "-seed", String.valueOf(simIndex + 1), // Germe différent pour chaque simulation
                             "-nbEch", "30", // Nombre d'échantillons par bit
@@ -166,6 +166,7 @@ public class SimulateurTEB {
             double snrMin = -10.0;
             double snrMax = 20.0;
             double pasSNR = 1;
+            int mess = 500;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque SNR
 
@@ -175,9 +176,9 @@ public class SimulateurTEB {
             SimulateurTEB simTEBRZ = new SimulateurTEB("RZ", nbSimulations);
 
             // Générer les courbes TEB pour chaque modulation et enregistrer dans des fichiers CSV
-            simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZ.csv");
-            simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZT.csv");
-            simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_RZ.csv");
+            simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZ.csv", mess);
+            simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_NRZT.csv", mess);
+            simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, "resultats/resultats_RZ.csv", mess);
 
             System.out.println("Fin de la simulation de la chaîne de transmission");
 
