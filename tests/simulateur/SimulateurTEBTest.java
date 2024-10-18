@@ -27,7 +27,7 @@ public class SimulateurTEBTest {
         double pasSNR = 5.0;
 
         // Generate TEB curve for NRZ and write to a test CSV file
-        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         // Assert the file was created
         File csvFile = new File(csvFilePath);
@@ -46,7 +46,7 @@ public class SimulateurTEBTest {
         double pasSNR = 5.0;
 
         // Generate TEB curve for NRZT and write to a test CSV file
-        simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBNRZT.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         // Assert the file was created
         File csvFile = new File(csvFilePath);
@@ -64,7 +64,7 @@ public class SimulateurTEBTest {
         double pasSNR = 5.0;
 
         // Generate TEB curve for RZ and write to a test CSV file
-        simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         // Assert the file was created
         File csvFile = new File(csvFilePath);
@@ -82,7 +82,7 @@ public class SimulateurTEBTest {
         double pasSNR = 10.0;
 
         // Generate TEB curve with varying SNR for NRZ and write to a test CSV file
-        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         // Assert that the results are different for different SNR values
         // This could involve parsing the CSV and comparing TEB values at different SNRs
@@ -101,7 +101,7 @@ public class SimulateurTEBTest {
         double pasSNR = 5.0;
 
         // Generate TEB curve for multiple runs and ensure the average is calculated
-        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         // Assert that the results are averaged across multiple runs
         // This can involve verifying that the CSV file contains reasonable averages
@@ -119,7 +119,7 @@ public class SimulateurTEBTest {
         double snrMax = 50.0;
         double pasSNR = 20.0;
 
-        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath);
+        simTEBNRZ.genererCourbeTEB(snrMin, snrMax, pasSNR, csvFilePath, 100);
 
         File csvFile = new File(csvFilePath);
         assertTrue("The CSV file for edge cases was not created", csvFile.exists());
