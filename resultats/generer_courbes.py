@@ -51,7 +51,7 @@ plt.ylabel('Taux d\'Erreur Binaire (TEB)')
 plt.yscale('log')
 
 # Ajouter une grille
-plt.grid(linestyle='--')
+plt.grid(True, which="both", ls="--")
 
 # Optionally, set x-axis limits if needed
 plt.xlim(min(x_nrz), max(x_nrz))
