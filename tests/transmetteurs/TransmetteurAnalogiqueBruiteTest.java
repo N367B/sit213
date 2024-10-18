@@ -9,7 +9,7 @@ public class TransmetteurAnalogiqueBruiteTest {
 
     private TransmetteurAnalogiqueBruite transmetteur;
     private Information<Float> signalOriginal;
-    private double snr;
+    private Double snr;
     private int nbEchantillonsParBit;
 
     @Before
@@ -51,8 +51,8 @@ public class TransmetteurAnalogiqueBruiteTest {
      */
     @Test
     public void testCalculerPuissanceSignal() throws Exception {
-        double expectedPower = 1.0; // Since all values are 1.0, power should be 1.0
-        double actualPower = transmetteur.calculerPuissanceSignal(signalOriginal);
+        Double expectedPower = 1.0; // Since all values are 1.0, power should be 1.0
+        Double actualPower = transmetteur.calculerPuissanceSignal(signalOriginal);
         assertEquals(expectedPower, actualPower, 0.001);
     }
 
@@ -64,7 +64,7 @@ public class TransmetteurAnalogiqueBruiteTest {
         Information<Float> signalBruite = transmetteur.ajouterBruit(signalOriginal);
 
         // Check that noise power is positive and non-zero
-        double puissanceBruit = transmetteur.calculerPuissanceBruit(signalOriginal, signalBruite);
+        Double puissanceBruit = transmetteur.calculerPuissanceBruit(signalOriginal, signalBruite);
         assertTrue("Noise power should be greater than zero", puissanceBruit > 0);
     }
 
@@ -151,8 +151,8 @@ public class TransmetteurAnalogiqueBruiteTest {
         transmetteur.recevoir(signalOriginal);
         Information<Float> signalBruit = transmetteur.getInformationEmise();
 
-        double expectedMean = 1.0;  // All signal elements were set to 1.0
-        double expectedStdDev = Math.sqrt(Math.pow(10, -snr / 10));
+        Double expectedMean = 1.0;  // All signal elements were set to 1.0
+        Double expectedStdDev = Math.sqrt(Math.pow(10, -snr / 10));
 
         // Check that the noise doesn't deviate excessively
         for (int i = 0; i < signalBruit.nbElements(); i++) {

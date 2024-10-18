@@ -14,7 +14,7 @@ public class SimulateurNbEch {
 
     private String typeModulation;
     private int nbSimulations;
-    private double snrpb; // SNR par bit
+    private Double snrpb; // SNR par bit
     private static final Boolean affichage = false;
     private AtomicInteger completedSimulations = new AtomicInteger(0);
 
@@ -25,7 +25,7 @@ public class SimulateurNbEch {
      * @param nbSimulations  Nombre de simulations à effectuer pour chaque nombre d'échantillons.
      * @param snrpb          SNR par bit en dB.
      */
-    public SimulateurNbEch(String typeModulation, int nbSimulations, double snrpb) {
+    public SimulateurNbEch(String typeModulation, int nbSimulations, Double snrpb) {
         this.typeModulation = typeModulation;
         this.nbSimulations = nbSimulations;
         this.snrpb = snrpb;
@@ -67,11 +67,12 @@ public class SimulateurNbEch {
 
                     Future<SimulationResult> future = executorService.submit(() -> {
                         Simulateur simulateur = new Simulateur(new String[]{
-                                "-mess", "2000",
+                                "-mess", "1000",
                                 "-form", typeModulation,
                                 "-seed", String.valueOf(simIndex + 1),
                                 "-nbEch", String.valueOf(currentNbEch),
                                 "-snrpb", String.valueOf(snrpb),
+                                "-codeur",
                                 "-ti", "100", "0.5" // Multi-trajets : décalage de 100 échantillons, amplitude 0.5
                         });
 
@@ -141,15 +142,15 @@ public class SimulateurNbEch {
             int pasNbEch = 15;
 
             int nbSimulations = 1; // Nombre de simulations pour chaque nbEch
-            double snrpb = 15; // SNR par bit en dB
+            Double snrpb = 15.0; // SNR par bit en dB
 
             // Créez les objets SimulateurNbEch pour chaque modulation
             SimulateurNbEch simNbEchNRZ = new SimulateurNbEch("NRZ", nbSimulations, snrpb);
             SimulateurNbEch simNbEchNRZT = new SimulateurNbEch("NRZT", nbSimulations, snrpb);
 
             // Générer les courbes TEB pour chaque modulation et enregistrer dans des fichiers CSV
-            simNbEchNRZ.genererCourbeTEB(nbEchMin, nbEchMax, pasNbEch, "resultats/resultats_nbEch_NRZ.csv");
-            simNbEchNRZT.genererCourbeTEB(nbEchMin, nbEchMax, pasNbEch, "resultats/resultats_nbEch_NRZT.csv");
+            simNbEchNRZ.genererCourbeTEB(nbEchMin, nbEchMax, pasNbEch, "resultats/resultats_nbEch_NRZ_codeur.csv");
+            simNbEchNRZT.genererCourbeTEB(nbEchMin, nbEchMax, pasNbEch, "resultats/resultats_nbEch_NRZT_codeur.csv");
 
             System.out.println("Fin de la simulation de la chaîne de transmission");
 
