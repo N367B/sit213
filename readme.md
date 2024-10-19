@@ -1,6 +1,6 @@
 # Projet SIT213
 
-Étape 6 - 09/10/2024 - Groupe C1
+Étape 6 - 19/10/2024 - Groupe C1
 
 BODIN Noé
 
