@@ -72,7 +72,8 @@ public class SimulateurNbEch {
                                 "-seed", String.valueOf(simIndex + 1),
                                 "-nbEch", String.valueOf(currentNbEch),
                                 "-snrpb", String.valueOf(snrpb),
-                                "-codeur",
+                                //"-codeur",
+                                //"-ampl", "-1.0", "1.0",
                                 "-ti", "100", "0.5" // Multi-trajets : décalage de 100 échantillons, amplitude 0.5
                         });
 
