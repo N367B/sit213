@@ -1,6 +1,6 @@
 # Projet SIT213
 
-Étape 6 - 19/10/2024 - Groupe C1
+Étape Finale - 28/10/2024 - Groupe C1
 
 BODIN Noé
 
@@ -75,9 +75,4 @@ Pour générer le livrable, il suffit de lancer la commande `./genDeliverable` d
 - [X] Recepteur (analogue(float) -> booléen)
 - [X] Simulateur (Main du projet)
 - [X] Simulateur TEB, test de l'erreur binaire en fonction du SNR et de la forme de signal
-
-
-## TODO
-
- - Amélioration des tests
- - Relecture complete du code pour harmonisation
+- 

@@ -33,6 +33,7 @@ public class SimulateurTEB {
      * @param snrMax Le SNR maximum à tester.
      * @param pasSNR Le pas entre les valeurs de SNR.
      * @param fichierCSV Le fichier dans lequel écrire les résultats.
+     * @param mess La taille du message à envoyer.
      * @throws Exception Si une erreur survient pendant la simulation.
      */
     public void genererCourbeTEB(Double snrMin, Double snrMax, Double pasSNR, String fichierCSV, int mess) throws Exception {
